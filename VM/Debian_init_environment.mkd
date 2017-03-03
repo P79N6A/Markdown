@@ -26,9 +26,37 @@
 
 - If you are using bash shell, Open **`~/.inputrc`** file and append **`set bell-style none`** 
 
+        Note: 这个功能不能用，会导致root不能登录, 下面设置就能实现警告声屏蔽。
 
 - If you are using xterm, Open **`~/.xsession`** file and append **`xset b off`**
 
+## Install markdown editor : retext ##
+
+- apt-get install retext
+
+## Install Chinese Input : fcitx ##
+
+- 安装更新输入法 : `apt-get install locales`
+
+- 编辑`/etc/locale.gen`文件，commment out **`zh_CN.UTF-8`**
+
+        locale的命名规则为<语言>_<地区>.<字符集编码>，如zh_CN.UTF-8，zh代表中文，CN代表大陆地区，UTF-8表示字符集。
+
+- 运行locale-gen命令，更新系统语言环境。
+
+- 安装fcitx : `apt-get install fcitx fcitx-googlepinyin`
+
+- im-config 设置fcitx
+
+- 在region&Language中设置中添加google pinyin
+
+- 重启
+
+- gnome下千万记得要在命令行打多一行代码，用来去除 其他所有的输入源以及所有其他输入法的热键:
+
+        gsettings set org.gnome.settings-daemon.plugins.keyboard active false
+        
+- 如果能打字，但没有显示出打字的面板（panel），apt-get install fcitx-table-all，再重复步骤5
 
 
 
