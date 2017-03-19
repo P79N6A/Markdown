@@ -14,6 +14,7 @@
 
 - Step one : Comment out all source.
 - Step two : Append **`deb http://mirrors.163.com/debian/ jessie main contrib`** to it
+- Step three: Append **`deb-src http://mirrors.163.com/debian/ jessie main contrib`** to it
 
 
 ## Allow root login by Gnome ##
