@@ -66,7 +66,7 @@ as it is published on the Debian website.
     Bruce was employed at the time that he led the Debian project. The name
     “Sid” holds particular status, since it will eternally be associated with the Un-
     stable branch. In the film, this character was the neighbor child, who was
-    always breaking toys — so beware of geing too close to Unstable. Otherwise,
+    always breaking toys — so beware of geting too close to Unstable. Otherwise,
     Sid is also an acronym for “Still In Development”.
     
 ## The Inner workings of the Debian Project ##
@@ -103,8 +103,8 @@ consensus is reached and a proposal issued.
 
 - The /usr/share/doc/package/
 
-    Documentation for each package is stored in /usr/share/doc/ package / .
-This directory oen contains a **README.Debian** file describing the Debian spe-
+    Documentation for each package is stored in /usr/share/doc/package/ .
+This directory ofen contains a **README.Debian** file describing the Debian spe-
 cific adjustments made by the package maintainer. It is, thus, wise to read
 this file prior to any configuration, in order to benefit from their experience.
 We also find a **changelog.Debian.gz** file describing the changes made from
