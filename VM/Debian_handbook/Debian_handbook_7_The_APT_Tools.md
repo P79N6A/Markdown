@@ -402,12 +402,12 @@ The apt-get command can do **keyword-based** package searches with **apt-cache s
 
 Some features are more rarely used. For instance, **apt-cache policy** displays the priorities of package sources as well as those of individual packages. Another example is **apt-cache pkgnames**, displays the list of all the packages which appear at least once in the cache.
 
-### Frontends : aptitude, synaptic ###
+## Frontends : aptitude, synaptic ##
 
 **APT is a C++ program whose code mainly resides in the libapt-pkg shared library**,  Using a shared library facilitates the creation of user interface(front-ends), sinece the code contained in the library can easily be reused. Historically, **apt-get was only designed as a test front-end for libapt-pkg but its success tends to obscure this fact.**
 
 
-**aptitude**
+### aptitude ###
 
 **aptitude** is an interactive program that can be used in semi-graphical mode on the console. You can browser the list of installed and available packages.  look up all the available information, and select packages to install or remove. **The programe is designed specifically to be used by administrators, so that its default behaviors are much more intelligent than apt-get's, and its interface much easier to understand.**
 
@@ -421,7 +421,7 @@ with ~s) or to other characteristics detailed in the documentation. The same pat
 (note than these keys can also be used for
 categories, in which case the corresponding actions will be applied to all the packages of the  category)
 
-### Tracking Automatically Installed Packages ###
+#### Tracking Automatically Installed Packages ####
 
 **One of the essential functionalities of aptitude (which has also been integrated to apt-get since Lenny) is the tracking of packages installed only through dependencies.** These packages are called "automatic" and are tagged with "A" in the list of packages - they often include libraries for instance.
 
@@ -438,13 +438,13 @@ People might want to know **why an automatically installed package** is present 
     i A apt-xapian-index Depends    python-debian (>= 0.1.15)
 
 
-#### --Recent evolutions of apt-get and aptitude-- ####
+#### Recent evolutions of apt-get and aptitude ####
 Some of the advantages that **aptitude** historically had over apt-get have recently disappeared. For instance, since the release of Lenny, apt-get memorizes the packages that have been installed only to satisfy dependencies,  just like aptitude has always done. It can also follow recommendations expressed by one package on another. 
 
 Among the recent evoluations of aptitude, a new version with a graphical interface is currently being
 developed. Even if it's available in Squeeze(in the separate aptitude-gtk package), it's not complete yet and is subject to stability issues.
 
-#### --Using aptitude on the command-line interface-- ####
+#### Using aptitude on the command-line interface ####
 Most of aptitude's features are accessible via the interactive interface as well as via command-lines. These command-lines will seem familiar to regular users of **apt-get** and **apt-cache**.
 
 **The advantage features of aptitude are also available on the command-line.** You can use the same package search patterns as in the interactive version:
@@ -457,7 +457,7 @@ for rexample: if you want to run the previously suggested cleanup of "auto-matic
 
 **Beware, if some packages are marked as automatic and if no other package depends on them, they will be removed immediatly (after a confirmation request)**
 
-#### -- Managing Recommandations, Suggestions and Tasks --####
+####  Managing Recommandations, Suggestions and Tasks ####
 Another intersting feature of aptitude is the fact that it repects recommandations between pacakges while still giving users the choice not to install them on a case basis. For example, the gnome-desktop-environment package recommends gnome-accessibility(among others). When you select the former for installation, the latter will also be selected(and marked as automatic if not already installed on the system). Typing **g** will make it obvious: gnome-accessibility appears on the summary screen of pending actions in the list of packages installed automatically to satisfy dependencies. However, you can decide not to install it before confirming the operation.
 
 Note that this **recommendation tracking feature does not apply to upgrades.** For instance, if
@@ -478,14 +478,14 @@ tasks are displayed as categories in the screens of package lists, you can eithe
 for installation or removal, or browse the list of packages included in the task to select a smaller
 subset.
 
-#### --Better Solver Algorithms-- ####
+#### Better Solver Algorithms ####
 
 **To conclude this secions, let's note that aptitude has more eleborate algorithms compared to apt-get when it comes to resolving difficult situations**. When a set of actions is requested and when these combined actions would lead to a incoherent system. **aptitude evaluates several possible scenarios and presents them in order of decreasing relevance. these algorithms are not failproof.** Fortunately there is always the possibility to manually select the actions to perform. When the currently selected actions lead to contradictions, the upper part of the screen indicates a numebr of "broken" packages(and you can directly navigate to those packages by pressing **b**). It is then possible to manully build solution for the problems found. **In particular, you can get access to the different available versions by simply selecting the pack-
 age with Enter. If the selection of one of these versions solves the problem, you should not hesi-
 tate to use the function. When the number of broken packages gets down to zero, you can safely
 go the summary screen of pending actions for a last check before you apply them.**
 
-#### --aptitude's log-- ####
+#### aptitude's log ####
 
 **Like dpkg, aptitude keeps a trace of excuted actions in its logfile(/var/log/aptitude)**. However, since both commands work at a very different level. **you
 cannot find the same information in their respective logfiles. While dpkg logs
@@ -496,3 +496,312 @@ Beware, this logfile only contains a summary of operations performed by apt
 itude . If other front-ends (or even dpkg itself) are occasionally used, then aptitude 's
 log will only contain a partial view of the operations, so you can't
 rely on it to build a trustworthy history of the system.
+
+### synaptic ###
+
+synaptic is a graphical package manager for debian which featuers a clean and effective graphical interface based on GTK+/GNOME, Its may ready-to-use filters give fast access to newly available packages, instaleld packages, upgradeble packages, obsolete packages and so on.if
+you browse through these lists, you can select the operations to be done on the packages (in-
+stall, upgrade, remove, purge); these operations are not performed immediately, but put into a
+task list. A single click on a button then validates the operations, and they are performed in one
+go.
+
+## Checking Package Authenticity ##
+
+Security is very important for Falcot Crop administrator. they need to ensure that they only install packages which are guaranteed to come from Debian with no tampering on the way.
+
+Debian provides a tamper-proof seal to guarantee -  at install time - that a package really comes from its offical maintainer and hasn't been modified by a third party.
+
+**The seal works with a chain of cryptographical hashes and a signture. The signed file is the Release file, Provided by the Debian mirrors. It contains a list of the Packages files(including their compressed forms, Packages.gz and Packages.bz2 and the incremental versions), along with their MD5, SHA1 and SHA256 hashes, which ensures that the files haven't been tampered with. **
+
+These **Packages** files contain a list of the Debian packages available on the mirror, along with their hashes, which ensures in turn that the contents of the packages themselves haven't been altered either.
+
+The trusted keys are managed with the **apt-key** command found in the **apt** package. This program maintains a keyring of GunPG public keys, which are used to verify signatures in the Release.gpg files available on the mirrors. It can be used to add new keys manually(when non-offical mirros are needed). Generally however, only the official Debian keys are needed. These keys are automatically kept up-to-date by the *debian-archving-keyring* package(which invokes apt-key when it is installed or upgraded). However, the first installation of this particular package requires caution: even if the package is signed like any other, the signature cannot be verified externally. **Cautions administrators should therefore check the fingerprints of imported keys before trusting them install new packages:**
+
+        # apt-key fingerprint
+        /etc/apt/trusted.gpg
+        --------------------
+        pub
+        1024D/F42584E6 2008-04-06 [expires: 2012-05-15]
+        Key fingerprint = 7F5A 4445 4C72 4A65 CBCD 4FB1 4D27 0D06 F425 84E6
+        uid
+        Lenny Stable Release Key <debian-release@lists.debian.org>
+        pub
+        4096R/55BE302B 2009-01-27 [expires: 2012-12-31]
+        Key fingerprint = 150C 8614 919D 8446 E01E 83AF 9AA3 8DCD 55BE 302B
+        uid
+        Debian Archive Automatic Signing Key (5.0/lenny) <ftpmaster@debian.org>
+        pub
+        2048R/6D849617 2009-01-24 [expires: 2013-01-23]
+        Key fingerprint = F6CF DE30 6133 3CE2 A43F DAF0 DFD9 9330 6D84 9617
+        uid
+        Debian-Volatile Archive Automatic Signing Key (5.0/lenny)
+        pub
+        4096R/B98321F9 2010-08-07 [expires: 2017-08-05]
+        Key fingerprint = 0E4E DE2C 7F3E 1FC0 D033 800E 6448 1591 B983 21F9
+        uid
+        Squeeze Stable Release Key <debian-release@lists.debian.org>
+        pub
+        4096R/473041FA 2010-08-27 [expires: 2018-03-05]
+        Key fingerprint = 9FED 2BCB DCD2 9CDF 7626 78CB AED4 B06F 4730 41FA
+        uid
+        Debian Archive Automatic Signing Key (6.0/squeeze) <ftpmaster@debian.org>
+        
+###Adding trusted keys###
+**When a third-party package source is added to the sources.list file, APT needs to be told about the corresponding GPG trusted key(otherwise it will keep complaining that it can't ensure the authenticity of the packages coming from that repository),** 
+
+**To add the key to the trusted keyring, the administrator can run apt-key add < key.asc,** Another way is to use the **synaptic** graphical interface: its "Authentication" tab in the settings => Repositories menu gives the possibility of importing a key from the key.asc file.
+
+Once the appropriate keys are in the keyring, APT will check the signatures before any risky operation, so that font-ends will display a warning if asked to install a package whose authenticity can't be ascertained.
+
+
+## Upgrading from One Stable Distribution to the Next ##
+
+**one of the best-known features of Debian is its ability to upgrade an installed system from one stable release to the next: dist-upgrade - a well-known phrase - has largely contribtued to the project's reputation. **
+
+### Recomanded Procedure ###
+Since Debian has quite some time to evolve in-between stable releases, you should read the release notes before upgrading.
+
+### ----- Release notes ---- ###
+The release note for an operating system(and, more generally, for any software) are a document giving an overview of the software, with some detail concerning the particularities of one version. These documents are generally short compared to the complete documentation, and they usually list the features which have been introduced since the prevoius version. They also give details on upgrading procedures, warnings for users of previous versions, and sometimes errata. 
+
+**Release notes are available online: the release notes for the current stable release have a dedicated URL, while older release notes can be found with their codenames. **
+
+    http://www.debian.org/releases/stable/releasenotes
+    http://www.debian.org/releases/lenny/releasenotes
+    
+### ----- Release notes ---- ###
+    
+it is never 100% risk-free, and should not be attempted before all improtant data has been backed up.
+
+Another good habit which makes the upgrade easier(and shorter) is to tidy your installed packages and keep only the ones that are really needed. Helpful tools to do that **include aptitude, deborphan and debfoster(See Section 6.4.1, "aptitude"(page 115))**, For example, you can use the following command:
+
+    #deborphan | xargs aptitude remove
+    
+Now for the upgrading itself. First, you need to change the `/etc/apt/sources.list` file to tell APT to get its packages from squeeze instead of Lenny. If the file only contains references to Stable rather than explcit codenames, the chaneg isn't even required, since Stable always refers to the latest released version of Debian. In both cases, the database of available packages must be refreshed(with the **aptitude update** command or the refresh button in synaptic).
+
+**Remember to upgrade(or install) the most essential packages listed below, otherwise you might find that your system is unbootable:**
+
+- the bootloader grub-pc or grub-legacy(sometimes lilo);
+- the tools that build the initial ramdisk(initrd): initramfs-tools;
+- the standard library: libc6 or one of its optimized variants such as libc-i386;
+- the management system for device files: udev;
+- last but not least, the kernel: depending on the hardware, the metapackages to use are linux-image-586, linux-image-686 or linux-image-686-bigmem. These packages will only work for the i386 architecture; owners of computers based on different hardware will use other package, most likely linux-image-2.6-amd64 for AMD64 or linux-image-powerpc* for PowerPC).
+   
+Once these first steps are done, it is time to handle the upgrade itself, either with aptitude or
+synaptic . You should carefully check the suggested actions before applying them: you might
+want to add suggested packages or deselect packages which are only recommended and known
+not to be useful. In any case, the front-end should come up with a scenario ending in a coherent
+and up-to-date Squeeze system. Then, all you need is to do is wait while the required packages
+are downloaded, answer the Debconf questions and possibly those about locally modified con-
+figuration files, and sit back while APT does its magic.
+  
+### Handling Problems after an Upgrade ###
+
+In spite of the Debian maintainers' best efforts ,a major system upgrade isn't always as smooth as you could wish. New software versions may be incompatible with pervious ones(for instance, their default behavior or their data format may have changed.) Also, some bugs may slip through the cracks desite the testing phase which always precedes a Debian release.
+
+To anticipate some of these problems, you can install the **apt-listchanges** package, which displays
+information about possible problems at the beginning of a package upgrade. This information is compiled by the package maintainers and put in **/usr/share/doc/package/NEWS.Debian** files for the benefit of users. Reading these files(possibly through apt-listchanges) should help you avoid bad surprises.
+
+**IMPORTANT:**
+You might sometimes find that the new version of a software doesn't work at all. This gen-
+erally happens if the application isn't particularly popular and hasn't been tested enough; a
+last-minute update can also introduce regressions which are only found after the stable release.
+**In both cases, the first thing to do is to have a look at the bug tracking system at http://bugs.
+debian.org/package , and check whether the problem has already been reported. If it hasn't,
+you should report it yourself with reportbug . If it is already known, the bug report and the
+associated messages are usually an excellent source of information related to the bug:**
+
+- sometimse a patch already exists, and it is available on the bug report; you can then recompile a fixed version of the broken package locally (see Section 15.1, "Rebuilding a Package from its Sources"(Page 412))
+
+- in other case, users may have found a workaround for the problem and shared their insights about it in their replies to the report;
+
+- in yet other cases, a fixed package may have already been prepared and made public by the maintainer. 
+
+Depending on the severity of the bug, a new version of the package may be prepared specifically
+for a new revision of the stable release. **When this happens, the fixed package is made available
+in the proposed-updates section of the Debian mirrors (see Section 6.1.1.1, “Stable Updates”
+(page 104)). The corresponding entry can then be temporarily added to the sources.list file,
+and updated packages can be installed with apt-get or aptitude.**
+
+Sometimes the fixed package isn't available in this section yet because it is pending a validation
+by the Stable Release Managers. You can verify if that's the case on their web page. Packages
+listed there aren't available yet, but at least you know that the publication process is ongoing.
+
+       http://release.debian.org/proposed-updates/stable.html
+       
+## Keeping a System Up to Date ##
+
+The Debian distribution is dyanmic and changes continually. **Most of the changes are in Testing and Unstable versions, but even Stable in updated from time to time.** mostly for security-related fixes. whatever version of Debian a system runs, it is generally a good idea to keep it up to date, so that you can get benefit of recent evolutions and bug fixes.
+
+### auto update ###
+
+The first of these tools is **apticron**, in the package of the same name. Its main effect is to run a script daily(via cron). The script updates the list of available package, and, if some installed packages are not in the latest available version, it sends an email with a list of these packages along with the changes that have been made in the new versions. Obviously, this package mostly targets users of Debian stable. since the daily emails would be very long for the more mobile
+versions of Debian. When updates are available, apticron automatically downloads them. It
+does not install them — the administrator will still do it — but having the packages already
+downloaded and available locally (in APT's cache) makes the job faster. 
+
+**Administrators in charge of several computers will no doupt appreciate being informed of pending upgrades. but upgrades themselves are still as tedious as they used to be, which is where the /etc/cron.daily/apt script(in the apt package) comes in handy. This script is also rundaily (and non-interactively) by cron. To control its behavior,  use APT configuration variable are:**
+ 
+APT::Periodic::Update-Package-Lists This option allows you to specify the frequency (in
+days) at which the package lists are refreshed. apticron users can do without this vari-
+able, since apticron already does this task.
+
+APT::Periodic::Download-Upgradeable-Packages Again, this option indicates a fre-
+quency (in days), this time for the downloading of the actual packages. Again, apticron
+users won't need it.
+
+APT::Periodic::AutocleanInterval This last option covers a feature that apticron doesn't
+have. It controls how often obsolete packages (those not referenced by any distribution
+anymore) are removed from the APT cache. This keeps the APT cache at a reasonable size
+and means that you don't need to worry about that task.
+
+**Other options can allow you to control the cache cleaning behavior with more precision. They
+are not listed here, but they are described in the /etc/cron.daily/apt script.**
+
+##Automatic Upgrades##
+
+Since Falcot Corp has many computers but only limited manpower, its administrators try to make upgrades as automatic as possible. The programs in charge of these processes must therefore run with no human intervention.
+
+### Configuring dpkg ###
+As we already mentioned (see sidebar "Avoiding the configuration file questions"(page
+87)), **dpkg can be instructed not to ask for confirmation when replacing a configuration file
+(with the --force-confdef --force-confold options).** Interactions can, however, have three other
+sources: some come from APT itself, some are handled by debconf , and some happen on the
+command line due to package configuration scripts.
+
+### Configuring APT ###
+The case of APT is simple: the -y option (or --assume-yes ) tells APT to consider the answer to
+all its questions to be “yes”.
+
+### Configuring debconf ###
+The case of debconf deserves more details, This program was,from its inception,**designed to control the relevance and volume of questions displayed to the user**, as well as the way they are shown. That is why its configuration requests a minimal priority for questions; only questions above the minimal priority are displayed. **debconf assumes the default answer(defined by the package maintainer) for questions which it decieded to skip.**
+
+The other relevant configuration element is the interface used by the front-end. If you choose
+noninteractive out of the choices, all user interaction is disabled. If a package tries to display
+an informative note, it will be sent to the administrator by email.
+
+To reconfigure debconf , use the **dpkg-reconfigure** tool from the debconf package; the relevant
+command is **dpkg-reconfigure debconf** . Note that the configured values can be temporarily
+overridden with environment variables when needed (for instance, **DEBIAN_FRONTEND** controls
+the interface, as documented in the debconf(7) manual page).
+
+### Handling Command Line Interactions ###
+The last source of interactions, and the hardest to get rid of, is the configuration scripts run
+by dpkg . There is unfortunately no standard solution, and no answer is overwhelmingly better
+than another.
+**The common approach is to suppress the standard input by redirecting the empty content of
+/dev/null into it with command </dev/null , or to feed it with an endless stream of newlines.
+None of these methods are 100 % reliable, but they generally lead to the default answers being
+used, since most scripts consider a lack of reply as an acceptance of the default value.**
+
+### The miracle Combination ###
+**By combining the previous elements, it is possible to design a small but rather reliable script which can handle automatic upgrades.** 
+
+    export DEBIAN_FRONTEND=noninteractive
+    yes '' | apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+    
+
+### The Falcot Corp case ###
+
+Falcot computers are a heterogeneous system, with machines having various functions. Administrators will therefore pick the most revlevant solution for each computer.
+
+In practice, **the servers running Squeeze are configured with the "miracle combination" above**, and are kept up to date automatically. Only the most critical servers(the firewalls, for instances) are set up with **apticron**, so that upgrades alawys happen under the supervision of an adminsitrator.
+
+The office workstations in the administrative serviecs also run Squeeze, but they are configured with the update-notifier/update-manager combination, so that users trigger the upgrades themselves. The rationale for this descision is that if upgrades happen without an explicit action, the behaviour of the computer might change unpexpectly, which would cause confusing for the main users.
+
+In the Lab, the few computers using Testing - to take Advantage of the latest software versions - are not upgraded automatically either. Adminsitrator only configure APT to prepare the upgrades but not enact them; when they decide to upgrade (manually), the tedious parts of refreshing package lists and
+downloading packages will be avoided, and administrators can focus on the
+really useful part.
+
+## Searching for Packages ##
+
+With the large and ever-growing amount of software in Debian, there emerges a paradox: De-
+bian usually has a tool for most tasks, but that tool can be very difficult to find amongst the
+myriad other packages. The lack of appropriate ways to search for (and to find) the right tool
+has long been a problem. Fortunately, this problem has almost entirely been solved.
+
+### package naming conventions ###
+
+Some categories of packages are named accoridngs to a conventional naming scheme; knowing the scheme can sometimes allow you to guess exact package names. for instance, for Perl modules, **the convention says that a moule called XML::Hanler::Composer upstream should be packaged as libxml-handler-composer-perl.** The library enabling the use of the gconf system from Python is pacakged as pyhton-gocnf. **It is unfortunately not possible to define a fully general naming scheme for all packages, even though package maintainers usually try to follow the choice of the upstream developers.**
+
+
+### search package description ###
+A slightly more successful searching pattern is a plain-text search in package names, but it remains very limited. You can generally find results by searching package descriptions: since each package has a more or less detailed description in addition to its package name, a keyword search; for instance, **apt-cache search video** will return a list of all packges **whose name or description contains the keyword "video".**
+
+### search package by meta-data ###
+For more complex searches, a more powerful tool such as **aptitude** is required, aptitude allows you to search according to a logical expresssion based on the package's meta-data fields. **For instance, the following command searches for packages whose name contains kino, shose description contains video and whoes maintainer's name contains paul:**
+
+        $ aptitude search kino~dvideo~mpaul
+        p
+        kino - Non-linear editor for Digital Video data
+        
+        $ aptitude show kino
+        Package: kino
+        State: not installed
+        Version: 1.3.4-1+b1
+        Priority: extra
+        Section: video
+        Maintainer: Paul Brossier <piem@debian.org>
+        Uncompressed Size: 9519k
+        Depends: libasound2 (> 1.0.18), libatk1.0-0 (>= 1.20.0),
+            libavc1394-0 (>= 0.5.3), libavcodec52 (>= 4:0.5+svn20090706-3) |
+            libavcodec-extra-52 (>= 4:0.5+svn20090706-3), libavformat52
+            [...]
+        Recommends: ffmpeg, gawk | mawk, curl
+        Suggests: udev | hotplug, vorbis-tools, sox, mjpegtools, lame, ffmpeg2theora
+        Conflicts: kino-dvtitler, kino-timfx, kinoplus
+        Replaces: kino-dvtitler, kino-timfx, kinoplus
+        Provides: kino-dvtitler, kino-timfx, kinoplus
+        Description: Non-linear editor for Digital Video data
+            Kino allows you to record, create, edit, and play movies recorded with
+            DV camcorders. This program uses many keyboard commands for fast
+            navigating and editing inside the movie.
+            The kino-timfx, kino-dvtitler and kinoplus sets of plugins, formerly
+            distributed as separate packages, are now provided with Kino.
+        Homepage: http://www.kinodv.org/
+        Tags: hardware::camera, implemented-in::c, implemented-in::c++,
+            interface::x11, role::program, scope::application,
+            suite::gnome, uitoolkit::gtk, use::editing,
+            works-with::video, x11::application
+        
+### search package by tag ###    
+Even these multi-criteria searches are rather unwieldy, which explains why they are not used as
+much as they could. A new tagging system has therefore been developed, and it provides a new
+approach to searching. Packages are given tags that provide a thematical classification along
+several strands, known as a “facet-based classification”. In the case of kino above, the package's
+tags indicate that Kino is a Gnome-based software that works on video data and whose main purpose is editing.
+
+Browsing this classification can help you to search for a package which corresponds to known
+needs; even if it returns a (moderate) number of hits, the rest of the search can be done man-
+ually. To do that, **you can use the ~G search pattern in aptitude**, but it is probably easier to
+simply navigate the site where tags are managed:  
+
+        http://debtags.alioth.debian.org/cloud/  
+        
+Selecting the works-with::video and use::editing tags yields a handful of packages, including
+the kino and pitivi video editors. This system of classification is bound to be used more and more
+as time goes on, and package managers will gradually provide efficient search interfaces based
+on it.
+
+### Sum up ###
+
+• **apt-cache only allows searching in package names and descriptions, which is very con-
+venient when looking for a particular package that matches a few target keywords;**
+
+• when the search criteria also include relationships between packages or other meta-data
+such as the name of the maintainer, **synaptic** will be more useful;
+
+• when a tag-based search is needed, a good tool is **packagesearch** , a graphical interface
+dedicated to searching available packages along several criteria (including the names of
+the files that they contain);
+
+• **finally, when the searches involve complex expressions with logic operations, the tool of
+choice will be aptitude 's search pattern syntax, which is quite powerful despite being
+somewhat obscure; it works in both the command-line and the interactive modes**.
+
+
+
+###aptitude Search term reference###
+
+        https://aptitude.alioth.debian.org/doc/en/ch02s04s05.html
+
