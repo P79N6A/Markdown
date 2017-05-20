@@ -1154,5 +1154,430 @@ tive and will continue to handle the other scheduled tasks (especially those sch
 you must have a kernel that supports it (compiled with the CONFIG_QUOTA option) — as is the
 case of Debian kernels. The quota management software is found in the quota Debian package.
 
-To activate them in a filesystem, you have to indicate the **usrquota** and grpquota options in
+To activate them in a filesystem, you have to indicate the **usrquota** and **grpquota** options in
 **/etc/fstab** for the user and group quotas, respectively. Rebooting the computer will then
+update the quotas in the absence of disk activity(a necessary condition for proper accouning of already used disk space uasge).
+
+The **edqtoua user** (or **edquota -g group**) command allows you to **change the limits while examining current disk sapce usage.**
+
+### Defining quotas with a script ###
+
+The **setquota** program can be used in a script to automatically change many quotas. Its setquota(8) manual details the syntax to use.
+
+The quota system allows you to set four limits:
+
+- two limits (called “soft” and “hard”) refer to **the number of blocks consumed**. If the
+filesystem was created with a block-size of 1 kilobyte, a block contains 1024 bytes from
+the same file. Unsaturated blocks thus induce losses of disk space. A quota of 100 blocks,
+which theoretically allows storage of 102,400 bytes, will however be saturated with just
+100 files of 500 bytes each, only representing 50,000 bytes in total. 
+
+- two limits (soft and hard) refer to **the number of inodes used**. Each file occupies at least
+one inode to store information about it (permissions, owner, timestamp of last access,
+etc.). It is thus a limit on the number of user files.
+
+**A “soft” limit can be temporarily exceeded**; the user will simply be warned that they are ex-
+ceeding the quota by the **warnquota** command, which is usually invoked by **cron**. A “hard”
+limit can never be exceeded: **the system will refuse any operation that will cause a hard quota
+to be exceeded.**
+
+
+### Blocks and inodes : Important###
+**The filesystem divides the hard drive into blocks** — **small contiguous areas**.
+The size of these blocks is defined during creation of the filesystem, and gen-
+erally varies between **1 and 8 kilobytes**.
+
+
+**A block** can be used either to store the **real data of a file**, **or for meta-data**
+used by the filesystem. Among this meta-data, you will especially find the
+inodes. **An inode** uses a block on the hard drive (but this block is not taken into
+consideration in the block quota, only in the inode quota), and contains both
+the information on the file to which it corresponds (name, owner, permissions,
+etc.) and the pointers to the data blocks that are actually used. For very large
+files that occupy more blocks than it is possible to reference in a single inode,
+there is an indirect block system; the inode references a list of blocks that do
+not directly contain data, but another list of blocks.
+###end###
+
+
+With the **edquota -t** command, you can define a maximum authorized **“grace period”** within
+which a soft limit may be exceeded. After this period, the soft limit will be treated like a hard
+limit, and the user will have to reduce their disk space usage to within this limit in order to be
+able to write anything to the hard drive.
+
+
+### Setting up a default quota for new users ###
+To automatically setup a quota for new users, you have to configure a template
+user (with **edquota** or **setquota** ) and indicate their user name in the **QUOTAUSER**
+variable in the **/etc/adduser.conf** file. This quota configuration will then be
+automatically applied to each new user created with the **adduser** command.
+
+
+## Backup : Important ##
+Making backups is one of the main responsibilities of any administrator, but it is a complex
+subject, involving powerful tools which are often difficult to master.
+
+Many programs exist, such as **amanda**, a client/server system featuring many options, whose
+**configuration is rather difficult**. **BackupPC** is also a client/server solution, but with a **web inter-face for configuration which makes it more user-friendly**. Dozens of other Debian packages are
+dedicated to backup solutions, as you can easily confirm with **apt-cache search backup**.
+Rather than detailing some of them, this section will present the thoughts of the Falcot Corp
+administrators when they defined their backup strategy.
+
+**At Falcot Corp, backups have two goals: recovering erroneously deleted files, and quickly restor-
+ing any computer (server or desktop) whose hard drive has failed.**
+
+### Backing Up with rsync ###
+Backups on tape having been deemed too slow and costly, **data will be backed up on hard drives
+on a dedicated server, on which the use of software RAID (see Section 12.1.1, “Software RAID”
+(page 298)) will protect the data from hard drive failure.**
+
+Desktop computers are not backed up individually, but users are advised that their personal account on their department's file server will be backed up.
+
+The **rsync comamnd**(from the package of the same name) is used daily to back up these different servers.
+
+### The hard link, a second name for the file ###
+A hard link, as opposed to a symbolic link, can not be differentiated from the
+linked file. Creating a hard link is essentially the same as giving an existing
+file a second name. This is why the deletion of a hard link only removes one of
+the names associated with the file. As long as another name is still assigned
+to the file, the data therein remain present on the filesystem. It is interesting
+to note that, unlike a copy, the hard link does not take up additional space on
+the hard drive.
+
+A hard link is created with the **ln target link command**. The link file is then
+a new name for the target file. **Hard links can only be created on the same
+filesystem, while symbolic links are not subject to this limitation.**
+### end ###
+
+**The available hard drive space prohibits implementation of a complete daily backup.** As such,
+the **rsync** command is preceded by a duplication of the content of **the previous backup with
+hard links**, which prevents usage of too much hard drive space. **The rsync process then only re-
+places files that have been modified since the last backup. With this mechanism a great number of backups** can be kept in a small amount of space. Since all backups are immediately available
+and accessible (for example, in different directories of a given share on the network), **you can
+quickly make comparisons between two given dates.**
+
+This backup mechanism is easily implemented with the **dirvish** program. It uses a backup
+storage space (“bank” in its vocabulary) in which it places timestamped copies of sets of backup
+files (these sets are called “vaults” in the dirvish documentation).
+
+The main configuration is in the **/etc/dirvish/master.conf** file. It defines the location of the
+backup storage space, the list of “vaults” to manage, and default values for expiration of the
+backups. **The rest of the configuration is located in the bank/vault/dirvish/default.conf**
+files and contains the specific configuration for the corresponding set of files.
+
+        bank:
+            /backup
+        exclude:
+            lost+found/
+            core
+            *~
+        Runall:
+            root  22:00
+        expire-default: +15 days
+        expire-rule:
+        #   MIN HR  DOM     MON     DOW     STRFTIME_FMT
+            *   *   *       *       1       +3 months
+            *   *   1-7     *       1       +1 year
+            *   *   1-7 1,4,7,10    1
+        
+        #The /etc/dirvish/master.conf file
+
+The **bank** setting indicates the directory in which the backups are stored. 
+
+The **exclude** setting allows you to indicate files (or file types) to exclude from the backup. 
+
+The **Runall** is a list of file sets to backup with a time-stamp for each set, which allows you to assign the correct date to the copy, in case the backup is not triggered at precisely the assigned time. You have to indicate a time just before the actual execution time (which is, by default, 10:04 pm in Debian, according to /etc/cron.d/dirvish ). 
+
+Finally, 
+
+the **expire-default** and **expire-rule** settings define the expi-ration policy for backups.
+
+The above example **keeps forever backups** that are generated on the **first Sunday of each quarter**, **deletes after one year those from the first Sunday of each month**,
+and **after 3 months those from other Sundays**. 
+
+**Other daily backups are kept for 15 days**. The order of the rules does matter, Dirvish uses the last matching rule, or the expire-default one if no other expire-rule matches.
+
+### Scheduled expiration ###
+The expiration rules are not used by **dirvish-expire** to do its job. In reality,
+
+the expiration rules are applied **when creating a new backup copy to define**
+
+the expiration date associated with that copy. **dirvish-expire** simply peruses
+the stored copies and deletes those for which the expiration date has passed.
+
+        client: rivendell.falcot.com
+        tree: /
+        xdev: 1
+        index: gzip
+        image-default: %Y%m%d
+        exclude:
+            /var/cache/apt/archives/*.deb
+            /var/cache/man/**
+            /tmp/**
+            /var/tmp/**
+            *.bak
+        
+        #The /backup/root/dirvish/default.conf file        
+        
+
+The above example specifies the set of files to back up: these are files on the machine **riven-
+dell.falcot.com** (for local data backup, simply specify the name of the local machine as indicated by
+hostname ), especially those in the **root tree (tree:/)**, except those listed in exclude . The backup
+will be limited to the contents of **one filesystem (xdev:1)**. It will not include files from other
+mount points. An index of saved files will be generated **(index:gzip)**, and the image will be
+named according to the current date **(image-default:%Y%m%d)**.
+
+There are many options available, all documented in the **dirvish.conf(5)** manual page. Once
+these configuration files are setup, you have to initialize each file set with the **dirvish --
+vault vault --init** command. From there on the daily invocation of **dirvish-runall** will
+automatically create a new backup copy just after having deleted those that expired.
+
+#### Remote backup over SSH ####
+When dirvish needs to save data **to a remote machine**, it will use **ssh to con-
+nect to it**, and will start **rsync** as a server. This requires the root user to be able
+to automatically connect to it. The **use of an SSH authentication key** allows
+precisely that (see Section 9.2.2.1, “Key-Based Authentication” (page 190)).
+#### End ####
+
+### Restoring Machines without Backups ###
+
+Desktop computers, which are not backed up, will be easy to regenerate from CD-ROMs made by
+the **mondo** program.
+
+These bootable CD-ROMs allow complete re-installation of the machine's
+system. 
+
+But beware: files that are not part of the system or the user's home directory will not,
+themselves, be backed up by **mondo** . This includes, for example, users' local **crontabs**, as well as any changes made to system configuration since the preparation of the CD-ROM.
+
+The Falcot Corp administrators are aware of the limits in their backup policy. Since they can't
+protect the backup server as well as a tape in a fireproof safe, they have installed it in a sepa-
+rate room so that a disaster such as a fire in the server room won't destroy backups along with
+everything else. Furthermore, they do an incremental backup on DVD-ROM once per week —
+only files that have been modified since the last backup are included.
+
+#### Backing up SQL and LDAP services ####
+**many services (such as SQL or LDAP databases) can not be backed up by
+simply copying their files (unless they are properly interrupted during creation
+of the backups, which is frequently problematic, since they are intended to be
+available at all times)**. As such, it is necessary to use an “export” mechanism
+to **create a “data dump” that can be safely backed up**. **These are often quite
+large, but they compress well. To reduce the storage space required, you will
+only store a complete text file per week, and a diff each day, which is created
+with a command of the type diff file_from_yesterday file_from_today.**
+The **xdelta** program produces incremental differences from binary dump.
+
+#### TAR, the standard for tape backups####
+Historically, the simplest means of making a backup on Unix was to store
+a TAR archive on a tape. The tar command even got its name from “Tape
+ARchive”.
+
+## Important : Hot Plugging : hotplug ##
+
+### Introduce ###
+The `hotplugg` kernel subssytem loads drivers for perpherals that can be hotpulgged. This includes USB peripherals(increasingly common), PCMCIA(cmommon expansion cards for laptops), IEEE 1394(aslo called "Firewire" or "I-link"), some SATA hard drives, and even, for some high-end servers, PCI or SCSI devices. **The kernel has a database that associates each device ID with the rquired drvier, This database is used during boot to load all the drivers for the peripheral devices detecetd on the different buses mentioned, but also when an additional hotplug device is connected. Once a driver is loaded. a message is sent to `udevd` so it will be able to create the corresponding entry in `/dev`**  
+
+### The naming Problem ###
+Before the apperance of hotplug connetions, it was easy to assign a fixed name to a device.
+
+It was based simply on the position of the devices on their respective bus. But this is not possible
+when such devices can come and go on the bus. The typical case is the use of a digital camera and
+a USB key, both of which appear to the computer as disk drives. The first one connected may
+be /dev/sdb and the second /dev/sdc (with /dev/sda representing the computer's own hard
+drive). **The device name is not fixed; it depends on the order in which devices are connected.**
+
+Additionally, more and more drivers use **dynamic values** for devices' **major/minor numbers**,
+which makes it impossible to have static entries for the given devices, since these essential
+characteristics may vary after a reboot.
+
+**udev was created precisely to solve this problem.**
+
+### Network card management ###
+Many computers have multiple network cards (sometimes two wired inter-
+faces and a wifi interface), and with hotplug support on most bus types, **the
+2.6 kernel no longer guarantees fixed naming of network interfaces. But a user
+who wants to configure their network in /etc/network/interfaces needs a
+fixed name!**
+
+It would be difficult to ask every user to create their own udev rules to address
+this problem. This is why **udev** was configured in a rather **peculiar manner**; on
+first boot (and, more generally, each time that a new network card appears)
+**it uses the name of the network interface and its MAC address to create new
+rules that will reassign the same name on subsequent boots. These rules are
+stored in /etc/udev/rules.d/70-persistent-net.rules.**
+
+This mechanism has some side effects that you should know about. Let's
+consider the case of computer that has only one PCI network card. The net-
+work interface is named eth0, logically. Now say the card breaks down, and
+the administrator replaces it; the new card will have a new MAC address.
+Since the old card was assigned the name, eth0, the new one will be assigned
+eth1, even though the eth0 card is gone for good (and the network will not
+be functional because /etc/network/interfaces likely configures an eth0 in-
+terface). **In this case, it is enough to simply delete the /etc/udev/rules.d/
+70-persistent-net.rules file before rebooting the computer. The new card
+will then be given the expected eth0 name.**
+
+### How udev works ###
+When **udev** is notified by the kernel of the appearance of a new device, **it collects various infor-
+mation on the given device by consulting the corresponding entries in /sys/**, especially those
+that uniquely identify it (MAC address for a network card, serial number for some USB devices,
+etc.).
+
+Armed with all of this information, udev then consults all of the rules contained in **/etc/udev/
+rules.d/** and **/lib/udev/rules.d/**.
+
+In this process it decides how to **name the device**, what **symbolic links to create** (to give it alternative names), and what **commands to execute**. All of these files are consulted, and the rules are all evaluated sequentially (except when a file uses “GOTO” directives). Thus, there may be several rules that correspond to a given event.
+
+The syntax of rules files is quite simple: each row contains **selection criteria and variable assign-
+ments**. The **former are used to select events** for which there is a need to react, and **the latter
+defines the action to take**. They are all simply separated with commas, and **the operator implic-
+itly differentiates between a selection criterion** (with comparison operators, such as == or != )
+or an assignment directive (with operators such as = , += or := ).
+
+**Comparison operators are used on the following variables:**
+
+- KERNEL : the name that the kernel assigns to the device;
+- ACTION : the action corresponding to the event (“add” when a device has been added,
+“remove” when it has been removed);
+- DEVPATH : the path of the device's **/sys/entry**;
+- SUBSYSTEM : the kernel subsystem which generated the request (there are many, but a
+few examples are “usb”, “ide”, “net”, “firmware”, etc.);
+- ATTR{attribut} : file contents of the attribute file in the **/sys/ $devpath /** directory of the
+device. This is where you find the MAC address and other bus specific identifiers;
+
+         /sys/devices/pci0000:00/0000:00:1c.2/0000:03:00.0/net/wlan0/address
+         
+- KERNELS , SUBSYSTEMS and ATTRS{attributes} are variations that will try to match the
+different options on one of the parent devices of the current device;
+- PROGRAM : delegates the test to the indicated program (true if it returns 0, false if not).
+The content of the program's standard output is stored so that it can be reused by the
+RESULT test;
+- RESULT : execute tests on the standard output stored during the last call to PROGRAM.
+
+The right operands can use pattern expressions to match several values at the same time. For
+instance, ***** matches any string (even an empty one); **?** matches any character, and `[]` matches
+the set of characters listed between the square brackets (or the opposite thereof if the first
+character is an exclamation point, and contiguous ranges of characters are indicated like `a-z`).
+
+Regarding the assignment operators, **= **assigns a value (and replaces the current value); in the
+case of a list, it is emptied and contains only the value assigned. **:= **does the same, but prevents
+later changes to the same variable. As for **+=** , it adds an item to a list. The following variables
+can be changed:
+
+- NAME : the device filename to be created in /dev/ . Only the first assignment counts; the
+others are ignored;
+- SYMLINK : the list of symbolic links that will point to the same device;
+- OWNER , GROUP and MODE define the user and group that owns the device, as well as
+the associated permission;
+- RUN : the list of programs to execute in response to this event.
+
+The values assigned to these variables may use a number of substitutions:
+
+- $kernel or %k : equivalent to KERNEL ;
+- $number or %n : the order number of the device, for example, for sda3 , it would be “3”;
+- $devpath or %p : equivalent to DEVPATH ;
+- $attr{attribute} or %s{attribute} : equivalent to ATTRS{attribute} ;
+- $major or %M : the kernel major number of the device;
+- $minor or %m : the kernel minor number of the device;
+- $result or %c : the string output by the last program invoked by PROGRAM;
+- and, finally, %% and $$ for the percent and dollar sign, respectively.
+
+The above lists are not complete (they include only the most important parameters), but the
+**udev(7)** manual page should be.
+
+### A concrete example : Important ###
+
+Let us consider the case of a simple USB key and try to assign it a fixed name. First, you must
+find the elements that will identify it in a unique manner. For this, plug it in and run **udevadm
+info -a -n /dev/sdc** (replacing /dev/sdc with the actual name assigned to the key).
+
+**To create a new rule, you can use tests on the device's variables, as well as those of one of the
+parent devices.** The above case allows us to create two rules like these:
+
+        KERNEL=="sd?", SUBSYSTEM=="block", ATTRS{serial}=="M004021000001", SYMLINK+="
+              usb_key/disk"
+        
+        KERNEL=="sd?[0-9]", SUBSYSTEM=="block", ATTRS{serial}=="M004021000001",
+             SYMLINK+="usb_key/part%n"
+             
+**Once these rules are set in a file, named for example /etc/udev/rules.d/010_local.rules ,
+you can simply remove and reconnect the USB key. You can then see that /dev/usb_key/disk
+represents the disk associated with the USB key, and /dev/usb_key/part1 is its first partition.**
+
+### Debugging udev's configuration ###
+Like many daemons, udevd stores logs in **/var/log/daemon.log**. But it is not
+very verbose by default, and it's usually not enough to understand what's hap-
+pening. The **udevadm control --log-priority=info** command increases the
+verbosity level and solves this problem. **udevadm control --log-priority=err**
+returns to the default verbosity level.
+
+## Power Management ##
+The topic of power management is often problematic. Indeed, properly suspending the com-
+puter requires that all the computer's device drivers know how to put them to standby, and that
+they properly reconfigure the devices upon waking. Unfortunately, there are still many devices
+unable to sleep well under Linux, because their manufacturers have not provided the required
+specifications.
+
+###Software suspend###
+The soware suspend banner rallies several recent efforts to integrate reliable
+hibernation under Linux, on disk or in memory. Recent kernels are relatively
+reliable in that regard, when used in cooperation with tools of the uswsusp
+package. Unfortunately the problems related to hibernation are not yet an-
+cient history, and you should run tests on your hardware before puing too
+much faith in its ability to wake from suspend.
+For those who want to learn more about how standby works with ACPI,
+Matthew Garrett has an excellent article about this in his blog.s
+
+        http://www.advogato.org/article/913.html
+        
+### Advanced Power Management (APM) ###
+APM (Advanced Power Management) control is present in all Debian kernels, but disabled by
+default. To activate it,** you add the apm=on option to the kernel parameters passed at boot
+time**. With LILO, you would add the append="apm=on" directive to the block indicating which
+image to boot (in the /etc/lilo.conf file), and relaunch lilo . With GRUB2, you simply add
+apm=on to the GRUB_CMDLINE_LINUX= variable in **/etc/default/grub** , and run **update-
+grub** to regenerate the contents of the boot menu.
+
+The apmd package provides a daemon that looks for events connected to energy management
+(switching between AC and battery power on a laptop, etc.), and allows you to run specific com-
+mands in response.
+
+These days, APM is really only justified on older computers that do not support ACPI properly.
+In all other cases, ACPI should be used.
+
+### Modern power savings: Advanced Configuration and Power Interface (ACPI) ###
+Linux supports ACPI (Advanced Configuration and Power Interface) — the most recent standard
+in power management. More powerful and flexible, it is also more complicated to implement.
+The acpid package is the counterpart to apmd for the ACPI world.
+
+If you know that your BIOS correctly manages ACPI, then this should be preferred over APM
+(removed upon update of the BIOS). When moving from one to the other, you must take care
+to remove the apmd package, since keeping it alongside with acpid could cause problems (and
+vice-versa)
+
+### Graphics card and standby ###
+The graphics card driver oen has a problem with standby. In case of trouble,
+it is a good idea to test the latest version of the X.org graphics server.
+
+### Apple and power management ###
+On Apple Powerbooks (thus PowerPC processors), apmd should be replaced
+with **pmud**.
+
+## Laptop Extension Cards: PCMCIA ##
+PCMCIA card drivers are built into the kernel as modules since kernel version 2.6.13. On a sys-
+tem running Debian Squeeze, you simply have to install the user space support contained in the
+pcmciautils package.
+
+The **wireless-tools** package is also necessary for good management of Wifi cards.
+
+Every time you connect or remove a card, the daemon configures or deconfigures it, by execut-
+ing a script in the /etc/pcmcia/ directory, which gets its settings from the /etc/pcmcia/*.
+opts files. These files have been slightly adapted to work with a Debian system; the configura-
+tion of the network is delegated to ifup if the /etc/pcmcia/network.opts file does not take
+care of it. The same is true for configuration of a wireless network, which can be specified in
+/etc/network/interfaces instead of /etc/pcmcia/wireless.opts . The /usr/share/doc/
+wireless-tools/README.Debian file also describes the syntax to use.
+
+After this overview of basic services common to many Unix systems, we will focus on the envi-
+ronment of the administered machines: the network. Many services are required for the net-
+work to work properly. They will be discussed in the next chapter.
