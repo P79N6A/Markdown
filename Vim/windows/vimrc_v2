@@ -54,7 +54,7 @@ set autoindent     "自动缩进
 set cindent "C 插件
 set number "设置行号
 "set ignorecase "忽略大小写 （查找字符串时）
-set nohlsearch "高亮显示 （查找字符串是，找到后高亮显示）
+set hlsearch "高亮显示 （查找字符串是，找到后高亮显示）
 set mouse=a "使用鼠标
 set ruler     "在右下角显示光标位置
 "set showcmd     "显示未敲完的命令
