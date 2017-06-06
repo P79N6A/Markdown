@@ -1,32 +1,32 @@
 "#------Basic config--------#                                                                                                            
-"syn on "Óï·¨¸ßÁÁ 
+"syn on "è¯­æ³•é«˜äº® 
 set tags=tags; 
 set autochdir 
-set helplang=cn     "Ê¹ÓÃÖĞÎÄ°ïÖúÎÄµµ
+set helplang=cn     "ä½¿ç”¨ä¸­æ–‡å¸®åŠ©æ–‡æ¡£
 set backspace=2
-set tabstop=4 "ÖÆ±í·ûµÄ¿í¶È
+set tabstop=4 "åˆ¶è¡¨ç¬¦çš„å®½åº¦
 set softtabstop=4
-set shiftwidth=4 "Ëõ½øµÄ¿Õ¸ñ
-set autoindent     "×Ô¶¯Ëõ½ø
-set cindent "C ²å¼ş
-set number "ÉèÖÃĞĞºÅ
-"set ignorecase "ºöÂÔ´óĞ¡Ğ´ £¨²éÕÒ×Ö·û´®Ê±£©
-set nohlsearch "¸ßÁÁÏÔÊ¾ £¨²éÕÒ×Ö·û´®ÊÇ£¬ÕÒµ½ºó¸ßÁÁÏÔÊ¾£©
-set mouse=a "Ê¹ÓÃÊó±ê
-set ruler     "ÔÚÓÒÏÂ½ÇÏÔÊ¾¹â±êÎ»ÖÃ
-"set showcmd     "ÏÔÊ¾Î´ÇÃÍêµÄÃüÁî
-set cmdheight=1 "Éè¶¨ÃüÁîĞĞµÄĞĞÊıÎª 1
-set laststatus=2 "ÏÔÊ¾×´Ì¬À¸ (Ä¬ÈÏÖµÎª 1, ÎŞ·¨ÏÔÊ¾×´Ì¬À¸)
-set incsearch "ÔÚÊäÈëËÑË÷µÄ×Ö·û´®Í¬Ê±¾Í¿ªÊ¼ËÑË÷ÒÑ¾­ÊäÈëµÄ²¿·Ö
-set nowrap "Ò»ĞĞ¾ÍÒ»ĞĞ£¬±ğÅªµ½µÚ¶şĞĞÈ¥
-set sidescroll=10     "ÆÁÄ»·Å²»ÏÂÊ±£¬°´Ò»´ÎÆÁÄ»ÒÆ¶¯Ò»¸ö×Ö·û    
-set whichwrap=b,s,<,>,[,]     "¿çĞĞÒÆ¶¯
+set shiftwidth=4 "ç¼©è¿›çš„ç©ºæ ¼
+set autoindent     "è‡ªåŠ¨ç¼©è¿›
+set cindent "C æ’ä»¶
+set number "è®¾ç½®è¡Œå·
+"set ignorecase "å¿½ç•¥å¤§å°å†™ ï¼ˆæŸ¥æ‰¾å­—ç¬¦ä¸²æ—¶ï¼‰
+set nohlsearch "é«˜äº®æ˜¾ç¤º ï¼ˆæŸ¥æ‰¾å­—ç¬¦ä¸²æ˜¯ï¼Œæ‰¾åˆ°åé«˜äº®æ˜¾ç¤ºï¼‰
+set mouse=a "ä½¿ç”¨é¼ æ ‡
+set ruler     "åœ¨å³ä¸‹è§’æ˜¾ç¤ºå…‰æ ‡ä½ç½®
+"set showcmd     "æ˜¾ç¤ºæœªæ•²å®Œçš„å‘½ä»¤
+set cmdheight=1 "è®¾å®šå‘½ä»¤è¡Œçš„è¡Œæ•°ä¸º 1
+set laststatus=2 "æ˜¾ç¤ºçŠ¶æ€æ  (é»˜è®¤å€¼ä¸º 1, æ— æ³•æ˜¾ç¤ºçŠ¶æ€æ )
+set incsearch "åœ¨è¾“å…¥æœç´¢çš„å­—ç¬¦ä¸²åŒæ—¶å°±å¼€å§‹æœç´¢å·²ç»è¾“å…¥çš„éƒ¨åˆ†
+set nowrap "ä¸€è¡Œå°±ä¸€è¡Œï¼Œåˆ«å¼„åˆ°ç¬¬äºŒè¡Œå»
+set sidescroll=10     "å±å¹•æ”¾ä¸ä¸‹æ—¶ï¼ŒæŒ‰ä¸€æ¬¡å±å¹•ç§»åŠ¨ä¸€ä¸ªå­—ç¬¦    
+set whichwrap=b,s,<,>,[,]     "è·¨è¡Œç§»åŠ¨
 set fileformats=unix,dos
-set cursorline "Í»³öÏÔÊ¾µ±Ç°ĞĞ
-set showmatch "²åÈëÀ¨ºÅÊ±£¬¶ÌÔİµØÌø×ªµ½Æ¥ÅäµÄ¶ÔÓ¦À¨ºÅ
-set matchtime=2 "¶ÌÔİÌø×ªµ½Æ¥ÅäÀ¨ºÅµÄÊ±¼ä
-set smartindent "¿ªÆôĞÂĞĞÊ±Ê¹ÓÃÖÇÄÜ×Ô¶¯Ëõ½ø
-filetype plugin indent on "×Ô¶¯Ê¶±ğÎÄ¼şÀàĞÍ£¬ÓÃÎÄ¼şÀàĞÍplugin½Å±¾£¬Ê¹ÓÃËõ½ø¶¨ÒåÎÄ¼ş
+set cursorline "çªå‡ºæ˜¾ç¤ºå½“å‰è¡Œ
+set showmatch "æ’å…¥æ‹¬å·æ—¶ï¼ŒçŸ­æš‚åœ°è·³è½¬åˆ°åŒ¹é…çš„å¯¹åº”æ‹¬å·
+set matchtime=2 "çŸ­æš‚è·³è½¬åˆ°åŒ¹é…æ‹¬å·çš„æ—¶é—´
+set smartindent "å¼€å¯æ–°è¡Œæ—¶ä½¿ç”¨æ™ºèƒ½è‡ªåŠ¨ç¼©è¿›
+filetype plugin indent on "è‡ªåŠ¨è¯†åˆ«æ–‡ä»¶ç±»å‹ï¼Œç”¨æ–‡ä»¶ç±»å‹pluginè„šæœ¬ï¼Œä½¿ç”¨ç¼©è¿›å®šä¹‰æ–‡ä»¶
 "set autochdir
 
 :nn <M-1> 1gt
@@ -49,12 +49,12 @@ filetype plugin indent on "×Ô¶¯Ê¶±ğÎÄ¼şÀàĞÍ£¬ÓÃÎÄ¼şÀàĞÍplugin½Å±¾£¬Ê¹ÓÃËõ½ø¶¨ÒåÎ
 
 :nn <M-0> :tablast<CR>
 
-"Õ³Ìù¸´ÖÆµÄÒ»Ğ©²Ù×÷
-vmap "+y "Ñ¡ÖĞ×´Ì¬ÏÂ Ctrl+c ¸´ÖÆ
-nmap "+yy "Ñ¡ÖĞ×´Ì¬ÏÂ Ctrl+c ¸´ÖÆ
-nmap "+p "Õı³£Ä£Ê½ÏÂÕ³Ìù
-nmap ggvG "Õı³£Ä£Ê½ÏÂÈ«Ñ¡
-vmap <C-x> dd<Esc> "Õı³£Ä£Ê½ÏÂDEL
+"ç²˜è´´å¤åˆ¶çš„ä¸€äº›æ“ä½œ
+vmap "+y "é€‰ä¸­çŠ¶æ€ä¸‹ Ctrl+c å¤åˆ¶
+nmap "+yy "é€‰ä¸­çŠ¶æ€ä¸‹ Ctrl+c å¤åˆ¶
+nmap "+p "æ­£å¸¸æ¨¡å¼ä¸‹ç²˜è´´
+nmap ggvG "æ­£å¸¸æ¨¡å¼ä¸‹å…¨é€‰
+vmap <C-x> dd<Esc> "æ­£å¸¸æ¨¡å¼ä¸‹DEL
 
 "nmap s :call SaveFile()  
 "imap s :call SaveFile()
