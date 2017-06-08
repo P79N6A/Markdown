@@ -26,7 +26,7 @@ when step two, maybe error that cann't find public key is thrown:
         http://www.yolinux.com/TUTORIALS/LinuxTutorialCDBurn.html
         
 
-## squid auth ##
+## Squid auth ##
 
 ### squid.conf ###
 http_port 8080
