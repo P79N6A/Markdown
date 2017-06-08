@@ -29,15 +29,24 @@ when step two, maybe error that cann't find public key is thrown:
 ## Squid auth ##
 
 ### squid.conf ###
+
 http_port 8080
+
 auth_param basic program /usr/lib64/squid/ncsa_auth /etc/squid/squid_passwd
+
 acl ncsa_users proxy_auth REQUIRED
+
 forwarded_for transparent
+
 #acl client src 10.19.65.54
+
 http_access allow ncsa_users
+
 #http_access allow client
+
 http_access deny all
 
 ### add user ###
+
 htpasswd  -c /etc/squid/passwd user1
          
