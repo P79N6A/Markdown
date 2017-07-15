@@ -28,7 +28,7 @@
 		workers = 2           //子进程数   
 		max-requests = 1000   
 		pidfile = /var/run/uwsgi8000.pid    //pid文件，用于下面的脚本启动、停止该进程
-		daemonize = /website/uwsgi8000.log
+		daemonize = /website/uwsgi8000.log  (使用supervisor的时候，这个配置不能要,由supervisor接管)
 		plugins = python
 		stats = 127.0.0.1:8002
 	        pythonpath = /usr/local/lib/python2.7/dist-packages
@@ -60,3 +60,18 @@
 - reload nginx configure file
 
 		nginx -s reload 
+		
+### supervisor ###
+- config supervisor.conf
+		[program:travel]
+		stopsignal=QUIT
+		autostart=true
+		autorestart=true
+		command=/usr/bin/uwsgi --ini /data/uwsgi/life.ini 
+		stdout_logfile=/var/log/supervisor/stdout_travel.log
+		stderr_logfile=/var/log/supervisor/stderr_travel.log
+		stdout_logfile_maxbytes=10MB
+		stdout_logfile_backups=10
+		redirect_stderr=true
+
+- supervisorctl command(status,restart..)
