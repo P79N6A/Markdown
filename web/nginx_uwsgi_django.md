@@ -39,7 +39,7 @@
 
 - run uwsgi
 
-		uwsgi --ini configure_path
+		uwsgi -d --ini configure_path
 
 - reload uwsgi configure file
 
