@@ -63,6 +63,7 @@
 		
 ### supervisor ###
 - config supervisor.conf
+
 		[program:travel]
 		stopsignal=QUIT
 		autostart=true
