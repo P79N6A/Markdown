@@ -21,20 +21,17 @@
 - generate a uwsgi configure file
 
 		[uwsgi]
-		socket = 127.0.0.1:9090
+		socket = 127.0.0.1:8001
+		uid = root
+		gid = root
 		master = true         //主进程
-		vhost = true          //多站模式
-		no-site = true        //多站模式时不设置入口模块和文件
-		workers = 2           //子进程数
-		reload-mercy = 10     
-		vacuum = true         //退出、重启时清理文件
+		workers = 2           //子进程数   
 		max-requests = 1000   
-		limit-as = 512
-		buffer-size = 30000
 		pidfile = /var/run/uwsgi8000.pid    //pid文件，用于下面的脚本启动、停止该进程
 		daemonize = /website/uwsgi8000.log
 		plugins = python
-	    pythonpath = /usr/local/lib/python2.7/dist-packages
+		stats = 127.0.0.1:8002
+	        pythonpath = /usr/local/lib/python2.7/dist-packages
 
 
 - run uwsgi
