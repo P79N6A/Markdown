@@ -19,7 +19,7 @@ the create database operate must after setting default encode, otherwise, the `c
 
 show variables like "char%"
 
-##  启动、停止、重启 MySQL 常见的操作方法(<a hre="http://blog.csdn.net/aeolus_pu/article/details/9300205">转载</a>) ##
+##  启动、停止、重启 MySQL 常见的操作方法(<a href="http://blog.csdn.net/aeolus_pu/article/details/9300205">转载</a>) ##
 
 ### 一、启动方式 ###
 
