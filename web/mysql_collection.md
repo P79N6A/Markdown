@@ -64,7 +64,7 @@ vi /etc/my.cnf
 将刚才在[mysqld]的段中加上的skip-grant-tables删除 
 保存并且退出vi。
 6．重新启动mysqld 
-# /etc/init.d/mysqld restart   ( service mysqld restart )
+/etc/init.d/mysqld restart   ( service mysqld restart )
 7．恢复服务器的正常工作状态
 将步骤一中的操作逆向操作。恢复服务器的工作状态。
  
