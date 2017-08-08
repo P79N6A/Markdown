@@ -49,7 +49,7 @@
 
 - im-config 设置fcitx
 
-- 按super键搜索"citx-configure"并打开，取消显示当前语言"勾选", 搜索googlepinyin添加。
+- 按super键搜索"fcitx-configure"并打开，取消显示当前语言"勾选", 搜索googlepinyin添加。
 
 - 重启
 
