@@ -111,26 +111,26 @@ mysql> quit
 就可以使用新密码 newpassword 登录了。
 
 ### mysql创建用户和授权实例 ###
-  mysql> CREATE USER 'finley'@'localhost' IDENTIFIED BY 'some_pass';
-  mysql> GRANT ALL PRIVILEGES ON *.* TO 'finley'@'localhost'
-      ->     WITH GRANT OPTION;
-  mysql> CREATE USER 'finley'@'%' IDENTIFIED BY 'some_pass';
-  mysql> GRANT ALL PRIVILEGES ON *.* TO 'finley'@'%'
-      ->     WITH GRANT OPTION;
-  mysql> CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin_pass';
-  mysql> GRANT RELOAD,PROCESS ON *.* TO 'admin'@'localhost';
-  mysql> CREATE USER 'dummy'@'localhost';
+    mysql> CREATE USER 'finley'@'localhost' IDENTIFIED BY 'some_pass';
+    mysql> GRANT ALL PRIVILEGES ON *.* TO 'finley'@'localhost'
+        ->     WITH GRANT OPTION;
+    mysql> CREATE USER 'finley'@'%' IDENTIFIED BY 'some_pass';
+    mysql> GRANT ALL PRIVILEGES ON *.* TO 'finley'@'%'
+        ->     WITH GRANT OPTION;
+    mysql> CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin_pass';
+    mysql> GRANT RELOAD,PROCESS ON *.* TO 'admin'@'localhost';
+    mysql> CREATE USER 'dummy'@'localhost';
 
-  mysql> SHOW GRANTS FOR 'admin'@'localhost';
-  +-----------------------------------------------------+
-  | Grants for admin@localhost                          |
-  +-----------------------------------------------------+
-  | GRANT RELOAD, PROCESS ON *.* TO 'admin'@'localhost' |
-  +-----------------------------------------------------+
+    mysql> SHOW GRANTS FOR 'admin'@'localhost';
+    +-----------------------------------------------------+
+    | Grants for admin@localhost                          |
+    +-----------------------------------------------------+
+    | GRANT RELOAD, PROCESS ON *.* TO 'admin'@'localhost' |
+    +-----------------------------------------------------+
 
-  mysql> SHOW CREATE USER 'admin'@'localhost'\G
-  *************************** 1. row ***************************
-  CREATE USER for admin@localhost: CREATE USER 'admin'@'localhost'
-  IDENTIFIED WITH 'mysql_native_password'
-  AS '*67ACDEBDAB923990001F0FFB017EB8ED41861105'
-  REQUIRE NONE PASSWORD EXPIRE DEFAULT ACCOUNT UNLOCK
+    mysql> SHOW CREATE USER 'admin'@'localhost'\G
+    *************************** 1. row ***************************
+    CREATE USER for admin@localhost: CREATE USER 'admin'@'localhost'
+    IDENTIFIED WITH 'mysql_native_password'
+    AS '*67ACDEBDAB923990001F0FFB017EB8ED41861105'
+    REQUIRE NONE PASSWORD EXPIRE DEFAULT ACCOUNT UNLOCK
