@@ -16,7 +16,8 @@ namespace damoncheng {
     }
 
     void print_tag(){
-        cout << func_name << " say:" << tag << endl;
+        const char * tag = "hello print_tag";
+        cout << func_name << " say:" << ::tag << endl;
     }
 
 

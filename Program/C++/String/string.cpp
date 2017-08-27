@@ -30,8 +30,8 @@ int main()
     */
 
     /*
-     *  get(name1, SIZE) : seperate by SIZE or newline, don't read newline, and return a cout object
-     *  get(char) : read a character(only character), and set it to char, and return a cout object
+     *  get(name1, SIZE) : seperate by SIZE or newline, don't read newline, and return a cin object
+     *  get(char) : read a character(only character), and set it to char, and return a cin object
      *  get() : read a character, and return the character
      * */
     cout << "Enter name1:\n";
