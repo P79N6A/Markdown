@@ -15,6 +15,7 @@
 namespace damoncheng {
     int custom_max(int x,int y);
     int custom_min(int x, int y);
+    void print_tag();
 }
 
 
