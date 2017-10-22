@@ -11,7 +11,7 @@
 ## pysvn安装 ##
 按说明安装
 
-##  重做mod_wsgi.so 模块##
+##  重做mod_wsgi.so 模块 ##
 ./configure --with-apxs=/usr/local/apache2/bin/apxs --with-python=/usr/local/bin/python 
 该命令会自动生存mod_wsgi.so文件到/usr/local/apache2/modules/目录下,重启apache就可生效(结合日志进行观察)
 
