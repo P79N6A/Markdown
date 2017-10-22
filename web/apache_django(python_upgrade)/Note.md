@@ -14,3 +14,9 @@
 ##  重做mod_wsgi.so ##
 ./configure --with-apxs=/usr/local/apache2/bin/apxs --with-python=/usr/local/bin/python 
 该命令会自动生存mod_wsgi.so文件到/usr/local/apache2/modules/目录下,重启apache就可生效(结合日志进行观察)
+
+## mod_wsgi安装细节文档 ##
+64 bit系统下mod_wsgi会安装失败，需要借助下面的链接来安装更新版本的mod_wsgi:
+https://modwsgi.readthedocs.io/en/develop/user-guides/quick-installation-guide.html
+
+configure带fpc标志位:./configure --enable-shared CFLAGS=-fPIC
