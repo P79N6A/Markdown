@@ -20,3 +20,5 @@
 https://modwsgi.readthedocs.io/en/develop/user-guides/quick-installation-guide.html
 
 configure带fpc标志位:./configure --enable-shared CFLAGS=-fPIC
+
+pip安装MySQL-python: pip2.7 install MySQL-python
