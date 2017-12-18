@@ -1,0 +1,16 @@
+*ack.vim安装
+
+https://github.com/mileszs/ack.vim
+
+*windows ack安装
+1. 下载并安装 Strawberry Perl
+    http://strawberryperl.com/
+
+2. 创建一个目录 c:/tools_bin，并将该目录添加到系统 PATH 环境变量
+
+3. 下载 ack 脚本 （http://betterthangrep.com/ack-standalone）
+     放到 c:/tools_bin/ack.pl
+
+4. 创建一个批处理文件 c:/tools_bin/ack.bat 内容如下:
+@echo off
+perl.exe c:/tools_bin/ack.pl %*
