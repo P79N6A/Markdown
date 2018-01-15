@@ -115,4 +115,5 @@ nmap     <C-F>p <Plug>CtrlSFPwordPath
 nnoremap <C-F>o :CtrlSFOpen<CR>
 nnoremap <C-F>t :CtrlSFToggle<CR>
 inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
+let g:ctrlsf_regex_pattern = 1
 ""#---------CtrlSF end----------#
