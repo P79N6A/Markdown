@@ -60,6 +60,7 @@ Plugin 'mileszs/ack.vim'
 Plugin 'Tagbar'
 Plugin 'ctags.vim'
 Plugin 'ctrlp.vim'
+Plugin 'dyng/ctrlsf.vim'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -104,3 +105,14 @@ nnoremap <silent> <F8> :TagbarToggle<CR>
 "#---------Ctrlp Start-----------#
 let g:ctrlp_regexp = 1
 "#---------Ctrlp End-------------#
+
+"#---------CtrlSF start----------#
+nmap     <C-F>f <Plug>CtrlSFPrompt
+vmap     <C-F>f <Plug>CtrlSFVwordPath
+vmap     <C-F>F <Plug>CtrlSFVwordExec
+nmap     <C-F>n <Plug>CtrlSFCwordPath
+nmap     <C-F>p <Plug>CtrlSFPwordPath
+nnoremap <C-F>o :CtrlSFOpen<CR>
+nnoremap <C-F>t :CtrlSFToggle<CR>
+inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
+""#---------CtrlSF end----------#
