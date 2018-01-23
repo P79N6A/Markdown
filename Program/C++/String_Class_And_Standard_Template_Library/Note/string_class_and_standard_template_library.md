@@ -1162,3 +1162,250 @@ list模板remove_if示例
         
         scores.remove_if(TooBig<int>(200));     // construct a function object
         
+### Predefined Functors ###
+
+**The STL defines serveral elementary function objects**. They perform actions such as adding two values, comparing two values for equality, and so on. They are provided to help support STL functions
+that take functions as arguments. For example, consider the **transform()**function.It has two versions. The first version takes four arguments. The first two are iterators specifying a range in a container. (By now you must be familiar with that approach.) The third is an iterator specifying where to copy the result. **The final is a functor which is applied to each element in the range to produce each new element in the result.** For example, consider the following:
+
+
+        const int LIM = 5;
+        
+        double arr1[LIM] = {36, 39, 42, 45, 48};
+        
+        vector<double> gr8(arr1, arr1 + LIM);
+        
+        ostream_iterator<double, char> out(cout, " ");
+        
+        transform(gr8.begin(), gr8.end(), out, sqrt);
+        
+        
+The **second version** uses a function that takes two arguments, applying it to one element from each of two ranges. It takes an additional argument, which comes third in order, identifying the start of the second range. For example, if **m8** were a second vector<double> object and if mean(double, double) returned the mean of two values, the following would output the **average of each pair of values from gr8 and m8**:
+
+        transform(gr8.begin(), gr8.end(), m8.begin(), out, mean);
+        
+for example:
+
+        double add(double x, double y) { return x + y; } 
+        transform(gr8.begin(), gr8.end(), m8.begin(), out, add);
+       
+But then you'd have to define a separate function for each type. It would be better to define a template, except you don't have to, because the STL already has. The **functional (formerly function.h)** header defines several template class function objects including one called **plus<>()**.
+
+        #include <functional>
+        
+        ...
+        
+        plus<double> add;  // create a plus<double> object
+        
+        double y = add(2.2, 3.4); // using plus<double>::operator()()
+        
+But it makes it easy to provide a function object as an argument:
+
+        transform(gr8.begin(), gr8.end(), m8.begin(), out, plus<double>() );
+        
+
+**The STL provides function object equivalents** for all the built-in **arithmetic**, **relational**, and **logical operators**. Table 16.11 shows the names for these functor equivalents. They can be used with the C++ **built-in types** or with any user-defined type that **overloads the corresponding**. operator.
+
+![](./images/operator_to_function_object.png)
+
+### Adapter Functors and Function Adapter ###
+
+The predefined functors of Table 16.11 are all `adaptable(可以适配的)`. Actually, the STL has five related concepts: **the adaptable generator**, the **adaptable unary function**, **the adaptable binary function**, **the adaptable predicate**, and **the adaptable binary predicate**.
+
+What makes a functor object adaptable is that it carries **typedef** members identifying its **argument types and return type**. The members are called **result_type**, **first_argument_type**, and **second_argument_type**, For example, the return type of a plus<int>::result_type object is identifield as plus<int>::result_type, and this would be typedef for int.
+
+The significance of a **function object** being **adaptable** is that it then can be used by function adapter objects which assume the existence of these typedef members. For example, a function with an argument that is an adaptable functor can use the **result_type** member to declare a variable that matches the function's return type.
+
+Indeed, the STL provides **function adapter classes** that use these facilities. For example, suppose you want to multiply each element of the vector gr8 by 2.5. That calls for using the transform() version with a unary function argument, like the
+
+        transform(gr8.begin(), gr8.end(), out, sqrt);
+        
+example shown earlier. The multiplies() functor can do the multiplication, but it's a binary function. So you need a function adapter that converts a functor with two arguments to one with one argument. The TooBig2 example earlier showed one way, but the STL has automated the process with the **binder1st** and **binder2nd** classes, which convert adaptable binary functions to adaptable unary functions.
+
+binder1st将两个参数的函数，转为一个参数的函数，且第二个参数转为常量
+binder2nd将两个参数的函数，转为一个参数的函数，且第一个参数转为常量
+
+        binder1st(f2, val) f1;
+        bind1st(multiplies<double>(), 2.5)
+        
+Thus, the solution to multiplying every element in **gr8** by **2.5** and displaying the results is
+this:
+
+        transform(gr8.begin(), gr8.end(), out,
+                bind1st(multiplies<double>(), 2.5));
+                
+
+## Algorithms ##
+The STL contains many non-member functions for working with containers. You've seen a few of them already: **sort()**, **copy()**, **find()**, **for_each()**, **random_shuffle()**, **set_union()**, **set_intersection()**, **set_differenece()**, and **transform()**. **You've probaly noticed they feature the same overall design,  using iterators to identify data ranges to be processed and to identify where results are to go. Some also take a function object argument to be used as part of the data processing.(这一句对STL的算法特征，总结的比较到位)**
+
+There are two main generic components to the algorithm function designs.
+
+ - First, they use **templates** to provide generic types. 
+ - Second, they use iterators to provide a generic representation for accessing data in a container. 
+ 
+Thus, the copy() function can work with a container holding type double values in an array, with a container holding string values in a linked list, or with a container storing user-defined objects in a tree structure, such as used by set. Because pointers are a special case of iterators, STL functions such as copy() can be used with ordinary arrays.
+
+**The uniform container design allows there to be meaningful relations between containers of different kinds.** For example, you can use **copy()** to copy values from an **ordinary array** to a **vector** object, from a vector object to a list object, and from a list object to a set object. You can use == to compare different kinds of containers, for example, deque and vector. This is possible because the overloaded == operator for containers uses iterators to compare contents, so a deque object and a vector object test as equal if they have the same content in the same order.
+
+### Algorithm Groups ###
+
+The STL divides the algorithm library into four group:
+
+- Non-modifying sequence operations
+
+    Non-modifying sequence operations operate on each element in a range. These operations leave a container unchanged. For example, find() and for_each() belong to this category.
+
+- Mutating sequence operation
+
+    Mutating sequence operations also operate on each element in a range. As the name suggests, however, they can change the contents of a container. The change could be in values or in the order in which the values are stored. For example, transform(), random_shuffle(), and copy() fall into this category.
+
+- Sorting and related operation
+
+    Sorting and related operations include several sorting functions (including sort()) and a variety of other functions, including the set operations.
+
+- Generalized numeric operations
+
+    The numeric operations include functions to sum the contents of a range, calculate the inner product of two containers, calculate partial sums, and calculate adjacent differences. Typically, these are operations characteristic of arrays, so vector is the container most likely to be used with them.
+
+The first three groups are described in the **algorithm (formerly algo.h) header file**, while the fourth group, being specifically oriented towards numeric data, gets its own header file, called **numeric**. (Formerly, they, too, were in **algol.h**.)
+
+### General Properties(非常好的使用案例，包含了temlpate,iterator,predicate的使用场景) ###
+
+As you've seen again and again, **STL functions work with iterators and iterator ranges**. The function prototype indicates the assumptions made about the iterators. For example, the **copy()** function has this prototype:
+
+        template<class InputIterator, class OutputIterator>
+        
+        OutputIterator copy(InputIterator first, InputIterator last, OutputIterator result);
+        
+In-place version replace:
+
+        template<class ForwardIterator, class T>
+        
+        void replace(ForwardIterator first, ForwardIterator last,
+                      const T& old_value, const T& new_value);
+                      
+copy version replace:
+
+        template<class InputIterator, class OutputIterator, class T>
+        
+        OutputIterator replace_copy(InputIterator first, InputIterator last,
+
+            OutputIterator result, const T& old_value, const T& new_value);
+            
+        The convention for copying algorithms is that they return an iterator pointing to the location one past that last value copied.
+        
+condition version replace:
+
+        template<class ForwardIterator, class Predicate class T>
+        
+        void replace_if(ForwardIterator first, ForwardIterator last,
+        
+                      Predicate pred, const T& new_value);
+                      
+A predicate, recall, is the name of a unary function returning a **bool** value. There's also a version called **replace_copy_if()**. You probably can figure out what it does and what its prototype is like.
+ 
+### The STL and the string Class ###
+
+the **string** class, although not part of the STL, is designed with the STL in mind. For example, it has begin(), end(), rbegin(), and rend() members. Thus, it can use the STL interface.
+
+The next_permutation():
+
+- The next_permutation() algorithm transforms the contents of a range to the next permutation; in the case of a string, the permutations are arranged in increasing alphabetical order. The algorithm returns true if it succeeds and false if the range already is in the final sequence. 
+
+### Functions Versus Container Methods (functino和method重要的比较)###
+
+Sometimes you have a choice between using an STL method and an STL function. Usually, **the method is the better choice**. 
+
+- First, it should be better optimized for a particular container.
+- Second, it can use a template class's memory management facilities and resize a container when needed.
+
+Suppose, for example, that you have a list of numbers and you want to remove all instances of a certain value, say 4, from the list. If la is a **list<int>** object, you can use the list **remove()** method:
+
+        la.remove(4);  // remove all 4s from the list 
+        
+After this method call, all elements with the value 4 are removed from the list, and the list is automatically resized
+
+There also is an STL algorithm called **remove()** (see Appendix G). Instead of being invoked by an object, it takes range arguments. So, if **lb** is a **list<int>** object, a call to the function could look like this:
+
+        remove(lb.begin(), lb.end(), 4);
+        
+However, because this remove() is not a member, **it can't adjust the size of the list**. Instead, it makes sure all the non-removed items are at the beginning of the list, and it returns an iterator to the new past-the-end value. You then can use this iterator to fix the list size. For example, you can use the list erase() method to remove a range describing the part of the list that no longer is needed. Listing 16.14 shows how this process works.
+
+        example output:
+        
+        Here's the output:
+        
+        
+        Original list contents:
+        
+            4 5 4 2 2 3 4 8 1 4
+        
+        After using the remove() method:
+        
+        la: 5 2 2 3 8 1
+        
+        After using the remove() function:
+        
+        lb: 5 2 2 3 8 1 4 8 1 4
+        
+        After using the erase() method:
+        
+        lb: 5 2 2 3 8 1
+        
+Although the methods are usually better suited, the non-method functions are more general. As you've seen, you can use them on arrays and string objects as well as STL containers, and you can use them with mixed container types, for example, saving data from a vector container in a list or a set.
+
+### Using the STL (对三大容器,vector,set,map的联动使用) ###
+
+一个对输入word计数案例：
+
+- vector接收输入word:
+
+        vector<string> words;
+        
+        string input;
+        
+        while (cin >> input && input != "quit")
+        
+            words.push_back(input);
+            
+- set对输入word大小写忽略和去重，获取word key:
+
+        set<string> wordset;
+        
+        transform(words.begin(), words.end(),
+        
+            insert_iterator<set<string> > (wordset, wordset.begin()), ToLower);
+            
+        string & ToLower(string & st)
+        {
+        
+            transform(st.begin(), st.end(), st.begin(), tolower);
+        
+            return st;
+        
+        }
+        
+- map保存对word key的计数
+
+        map<string, int> wordmap;
+        
+        set<string>::iterator  si;
+        
+        for (si = wordset.begin(); si != wordset.end(); si++)
+        
+            wordmap.insert(pair<string, int>(*si, count(words.begin(),
+        
+            words.end(), *si)));
+
+
+**The map class has an interesting feature—you can use array notation with keys serving as indices to access the stored values.(靠近脚本语言的特征)** For example, wordmap["the"] would represent the value associated with the key "the", which in this case is the number of occurrences of the string "the". Because the wordset container holds all the keys used by wordmap, you can use the following code as an alternative and more attractive way of storing results:
+
+        for (si = wordset.begin(); si != wordset.end(); si++)
+        
+            wordmap[*si] = count(words.begin(), words.end(), *si);
+            
+## Other Libraries ##
+ 
+C++ provides some other class libraries that are more specialized than the examples covered in this chapter. The complex header file provides a complex class template for complex numbers, with specializations for float, long, and long double. The class provides standard complex number operations along with standard functions that can be used with complex numbers.
+
+The valarray header file provides a valarray template class. This class template is designed to represent numeric arrays and provides support for a variety of numeric array operations, such as adding the contents of one array to another, applying math functions to each element of an array, and applying linear algebra operations to arrays.
+
