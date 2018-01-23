@@ -27,9 +27,9 @@
 
 - If you are using bash shell, Open **`~/.inputrc`** file and append **`set bell-style none`** 
 
-        Note: 这个功能不能用，会导致root不能登录, 下面设置就能实现警告声屏蔽。
-
 - If you are using xterm, Open **`~/.xsession`** file and append **`xset b off`**
+
+        Note: 这个功能不能用，会导致root不能登录, 上面设置就能实现警告声屏蔽。
 
 ## Install markdown editor : retext ##
 
