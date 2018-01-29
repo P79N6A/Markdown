@@ -794,6 +794,41 @@ Some systems, such as DOS, support two file formats: text and binary. If you wan
 
 Using a binary file mode causes a program to transfer data from memory to a file, or vice versa, without any hidden translation taking place. Such is not necessarily the case for the default text mode. For example, consider DOS text files. They represent a newline with a two-character combination: carriage return, linefeed. Macintosh text files represent a newline with a carriage return. Unix and Linux files represent a newline with a linefeed. C++, which grew up on Unix, also represents a newline with a linefeed. For portability, a DOS C++ program automatically translates the C++ newline to a carriage return, linefeed when writing to a text mode file; and a Macintosh C++ program translates the newline to a carriage return when writing to a file. When reading a text file, these programs convert the local newline back to the C++ form. The text format can cause problems with binary data, for a byte in the middle of a double value could have the same bit pattern as the ASCII code for the newline character. Also there are differences in how end-of-file is detected. So you should use the binary file mode when saving data in binary format. (Unix systems have just one file mode, so on them the binary mode is the same as the text mode.)
 
+### Random Access ###
+
+For our last example, let's look at random access. This means moving directly to any location in the file instead of moving through it sequentially. The random access approach is often used with database files. The **fstream** class derives from the **iostream** class, which, in turn, is based on both **istream** and **ostream** classes. so it inherits the methods of both.
+
+The **fstream** class inherits two methods for this: **seekg()** moves the input pointer to a given file loaction, and **seekp()** moves the output pointer to a given file lcoation. (Actually, because the **fstream** class uses buffers for intermediate storage of data, the pointers point to locations in the buffer, not in the actual file.) 
+
+Here are the **seekg()** prototypes:
+
+        basic_istream<charT,traits> & seekg(off_type, ios_base::seekdir);
+        basic_istream<charT,traits> & seekg(pos_type);
+          
+As you can see, they are templates. This chapter will use a template specialization for the char type. For the char specialization, the two prototypes are equivalent to the following:
+
+        istream & seekg(streamoff, ios_base::seekdir);
+        istream & seekg(streampos);
+        
+**The first prototype represents locating a file position measured, in bytes, as an offset from a file location specified by the second argument.** 
+
+- ios_base::beg means measure the offset from the beginning of the file.
+- ios_base::cur means measure the offset from the current position.
+- ios_base::end means measure the offset from the end of file.
+
+        fin.seekg(30, ios_base::beg);    // 30 bytes beyond the beginning
+        
+        fin.seekg(-1, ios_base::cur);    // back up one byte
+        
+        fin.seekg(0, ios_base::end);     // go to the end of the file
 
 
-  
+**The second prototype represents locating a file position measured in bytes from the beginning of a file.**
+
+        fin.seekg(112);
+        
+        locates the file pointer at byte 112, which would be the 113th byte in the file. 
+        
+
+If you want to check the current position of a file pointer, you can use the **tellg()** method for input streams and the **tellp()** methods for output streams. 
+
