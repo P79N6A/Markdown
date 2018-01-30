@@ -3,7 +3,7 @@
 using namespace std;
 
 #include <fstream>
-#include <iomainip>
+#include <iomanip>
 #include <cstdlib>
 
 struct planet
@@ -130,7 +130,7 @@ int main()
 			 << setprecision(2) << setw(6) << pl.g << "\n";
 	
 	}
-	fincout.close();
+	finout.close();
 	
 
 
