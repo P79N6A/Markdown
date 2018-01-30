@@ -832,3 +832,11 @@ As you can see, they are templates. This chapter will use a template specializat
 
 If you want to check the current position of a file pointer, you can use the **tellg()** method for input streams and the **tellp()** methods for output streams. 
 
+### Real World Note:Working with temporary Files ###
+
+How can you ensure that each file is assigned a unique name. Well, the **tmpnam()** standard function declared in **cstdio** has got you covered.
+
+    char * tmpnam(char * pszName);
+    
+The **tmpnam()** function creates a temporary name and places it in the C-style string pointed to by pszNmae. The constants L_tmpnam and TMP_MAX, both defined in cstdio, limit the number characters in the filename and the maximum number of times **tmpnam()** can be called without generating a duplicate filename in the current directory.
+
