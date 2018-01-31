@@ -840,3 +840,47 @@ How can you ensure that each file is assigned a unique name. Well, the **tmpnam(
     
 The **tmpnam()** function creates a temporary name and places it in the C-style string pointed to by pszNmae. The constants L_tmpnam and TMP_MAX, both defined in cstdio, limit the number characters in the filename and the maximum number of times **tmpnam()** can be called without generating a duplicate filename in the current directory.
 
+## Incore Formating ##
+
+The **iostream** family supports I/O between the program and a terminal. 
+
+The **fstream** family uses the same interface to provide I/O between a program and a file.
+
+The **sstream** family uses the same interface to provide I/O between a program and a string object.
+
+The process of reading formated information from a string object or of writing formatted informaion to a string object is termed **incore formatting**.
+
+The **sstream** header file defines an **ostringstream** class derived from the **ostream** class. 
+
+        ostringstream outstr;
+        
+        double price = 55.00;
+        
+        char * ps = " for a copy of the draft C++ standard!";
+        
+        outstr.precision(2);
+        
+        outstr << fixed;
+        
+        outstr << "Pay only $" << price << ps << end;
+        
+The formatted text goes into a buffer, and the object uses dynamic memory allocation to expand the buffer size as needed. The ostringstream class has a member function, called str(), which returns a string object initialized to the buffer's contents:
+
+        string mesg = outstr.str();    // returns string with formatted information
+        
+        
+The **istringstream** class lets you use the istream family of methods to read data from an istringstream object, which can be initialized from a string object. Suppose facts is a string object. To create an istringstream object associated with this string, do the following:
+
+        istringstream instr(facts);     // use facts to initialize stream. facts is a string
+    
+## What now? ##
+
+The second stage is learning to use the language effectively.
+
+Two common techniques are use-case analysis and CRC cards. In use-case analysis, the development team lists the common ways, or scenarios, in which they expect the final system to be used, identifying elements, actions, and responsibilities that suggest possible classes and class features. CRC (short for Class/Responsibilities/Collaborators) cards are a simple way to analyze such scenarios. The development team creates an index card for each class. On the card are the class name, class responsibilities, such as data represented and actions performed, and class collaborators, such as other classes with which the class must interact. Then the team can walk through a scenario, using the interface provided by the CRC cards. This can lead to suggesting new classes, shifts of responsibility, and so on.
+
+On a larger scale are the systematic methods for working on entire projects. The most recent of these is the Unified Modeling Language, or UML. This is not a programming language; rather, it is a language for representing the analysis and design of a programming project. It was developed by Grady Booch, Jim Rumbaugh, and Ivar Jacobson, who had been the primary developers of three earlier modeling languages: the Booch Method, OMT (Object Modeling Technique), and OOSE (Object-Oriented Software Engineering), respectively. UML is the evolutionary successor of these three.
+
+
+        
+        
