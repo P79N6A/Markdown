@@ -881,6 +881,15 @@ Two common techniques are use-case analysis and CRC cards. In use-case analysis,
 
 On a larger scale are the systematic methods for working on entire projects. The most recent of these is the Unified Modeling Language, or UML. This is not a programming language; rather, it is a language for representing the analysis and design of a programming project. It was developed by Grady Booch, Jim Rumbaugh, and Ivar Jacobson, who had been the primary developers of three earlier modeling languages: the Booch Method, OMT (Object Modeling Technique), and OOSE (Object-Oriented Software Engineering), respectively. UML is the evolutionary successor of these three.
 
+Information can be transferred between a buffer and a file using large chunks of data of the size most efficiently handled by devices like disk drives. 
 
+And information can be transferred between a buffer and a program in a byte-by-byte flow that often is more convenient for the processing done in a program.
+
+C++ programs that include the iostream file automatically open eight streams, managing them with eight objects. The **cin** object manages the standard input stream, which, by default, connects to the standard input device, typically a keyboard. The **cout** object manages the standard output stream, which, by default, connects to the standard output device, typically a monitor. The **cerr and clog** objects manage **unbuffered** and **buffered** streams connected to the standard error device, typically a monitor. These four objects have four wide character counterparts named **wcin, wcout, wcerr, and wclog**.
+
+You can control how a program formats output by using ios_base class methods and by using manipulators (functions that can be concatenated with insertion) defined in the iostream and iomanip files. These methods and manipulators let you control the number base, the field width, the number of decimal places displayed, the system used to display floating-point values, and other elements.        
         
-        
+A text file stores all information in character form. For example, numeric values are converted to character representations. The usual insertion and extraction operators, along with **get()** and **getline()**, support this mode. A binary file stores all information using the same binary representation the computer uses internally. Binary files store data, particularly floating-point values, more accurately and compactly than text files, but they are less portable. The **read()** and **write()** methods support binary input and output.
+
+The **seekg()** and **seekp()** functions provide C++ random access for files. These class methods let you position a file pointer relative to the beginning of a file, relative to the end, or relative to the current position. The tellg() and tellp() methods report the current file position.
+
