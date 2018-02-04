@@ -59,8 +59,9 @@
         
 - 如果能打字，但没有显示出打字的面板（panel），apt-get install fcitx-table-all，再重复步骤5
 
+## virtualBox addition 安装失败 ##
 
-
+-  apt-get install安装linux kernel headers
 
 
 
