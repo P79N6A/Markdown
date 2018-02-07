@@ -1,0 +1,36 @@
+pipeline {
+
+	agent any
+
+	stages {
+	
+		stage('Build') {
+			steps {
+				echo "Building.."
+				sh 'make clean && make'
+				archiveArtifacts artifacts : 'hello', fingerprint : true
+			}
+		}
+
+		stage('Test') {
+			steps {
+				echo "Testing.."
+			}
+		}
+
+		stage('Deploy') {
+			steps {
+				echo "Deploying.."
+			}
+		}
+	
+	}
+	post {
+	
+		failure {
+			mail to: "snhellogg@gmail.com", subject: 'The Pipeline failed :(', body: 'hello jenkins'
+		}
+	
+	}
+
+}
