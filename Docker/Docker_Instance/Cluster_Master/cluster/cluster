@@ -1,0 +1,81 @@
+#!/bin/bash
+#
+#author : damoncheng
+#
+#description : sync master directory to slave by rsync
+#
+
+. /etc/rc.d/init.d/functions
+
+DIR1="`dirname $BASH_SOURCE`"
+cluster_dir=`readlink -f "$DIR1"`
+source $cluster_dir/config
+
+RETVAL=0
+
+start() {
+   echo -n $"Starting cluster:"
+
+   $cluster_dir/core/command_check.sh
+   [ $? != 0 ] && echo -e "\tinotifywait and rsync need be installed" && RETVAL=2 && return $RETVAL
+
+   $cluster_dir/core/check.sh $cluster_dir $ipfile $logdir/log
+   [ $? != 0 ] && echo -e "\tcheck ip list fail" && RETVAL=2 && return $RETVAL
+
+   $corefile "$cluster_dir/config"  &
+   RETVAL=$?
+
+   [ $RETVAL != 0 ] && echo -e "\tfail" && RETVAL=2 && return $RETVAL
+   echo -e "\tsuccess" && touch ${lockfile}
+   return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping cluster:"
+
+    ! [ -f $pidfile ] && echo -e "\tno pid file!" && RETVAL=2 && return $RETVAL
+
+    pid=$(cat $pidfile)
+    ([ $RETVAL != 0 ] || ! [[ $pid =~ ^[0-9]+$ ]]) &&  echo -e "\terror pid:$pid" && RETVAL=2 && return $RETVAL
+    
+    #echo "ps -f -p $pid | grep $corefile | wc -l"
+    process=$(ps -f -p $pid | grep $corefile | wc -l) 
+    RETVAL=$?
+    ([ $RETVAL != 0 ] || [ $process -lt 1 ]) && echo -e "\tno process:$process" && RETVAL=2 && return $RETVAL
+
+    # Get our process group id
+    PGID=$(ps -o pgid= $pid | grep -o [0-9]*)
+    # Kill it in a new new process group
+    setsid kill -- -$PGID
+
+    RETVAL=$?
+    [ $RETVAL != 0 ] && echo -e "\tfail" && RETVAL=2 && return $RETVAL
+    echo -e "\tsuccess" && rm -f ${lockfile} ${pidfile}
+}
+
+rh_status() {
+    status -p ${pidfile} ${corefile}
+}
+
+case "$1" in
+    start)
+       rh_status >/dev/null 2>&1 && exit 0
+       start
+       ;;
+    stop)
+       stop
+       ;;
+    status)
+       rh_status
+       RETVAL=$?
+       ;;
+    restart)
+       stop
+       start
+       ;;
+    *)
+       echo $"Usage: cluster.sh {start|stop|restart|status}"
+       RETVAL=2
+esac
+
+exit $RETVAL
