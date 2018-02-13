@@ -29,7 +29,11 @@
 
 - Build the app
 
+<<<<<<< HEAD
         docker build -t friendlyhello .
+=======
+        docker build -t friendlyhello
+>>>>>>> e716d412483f1f685897cffdaef0dd4797a74a2e
        
 - Run the app
 
@@ -171,6 +175,7 @@ Up until now, you have been using Docker in a single-host mode on your local mac
 
 #### Set up your swarm ####
 
+<<<<<<< HEAD
 
 
 - create two virtual machine
@@ -435,4 +440,11 @@ let’s go through the same workflow once more to add a Redis database for stori
 
             $ docker stack deploy -c docker-compose.yml getstartedlab
             
+=======
+- make your current machine a swarm manager
+
+        docker swarm init
+
+- other machines to have them join the swarm as workers
+>>>>>>> e716d412483f1f685897cffdaef0dd4797a74a2e
 
