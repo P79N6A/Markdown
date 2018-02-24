@@ -14,7 +14,8 @@ ADD . /home/damoncheng/Git/Markdown/Docker/Jenkins
 EXPOSE 36093 50000
 
 # Define environment variable
-ENV JENKINS_OPTS --httpPort=36093
+ENV JENKINS_OPTS --httpPort=8080
+ENV JENKINS_SLAVE_AGENT_PORT 36093
 
 # Run app.py when the container launches
 # CMD ["python", "app.py"]
