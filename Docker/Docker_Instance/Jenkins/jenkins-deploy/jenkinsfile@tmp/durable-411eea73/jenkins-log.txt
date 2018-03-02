@@ -1,0 +1,31 @@
++ rsync -rvlHpogDtSu --delete --password-file=/home/docker/rsyncd.secrets ../ root@192.168.99.1::jenkins_deploy
+sending incremental file list
+jenkinsfile/
+jenkinsfile/hello
+jenkinsfile/.git/
+jenkinsfile/.git/FETCH_HEAD
+jenkinsfile/.git/HEAD
+jenkinsfile/.git/config
+jenkinsfile/.git/index
+jenkinsfile/.git/logs/HEAD
+jenkinsfile/.git/logs/refs/remotes/origin/master
+jenkinsfile/.git/objects/
+jenkinsfile/.git/objects/24/
+jenkinsfile/.git/objects/24/d96bf5ebfec184cb4973ca86e2aa47a5d57650
+jenkinsfile/.git/objects/26/
+jenkinsfile/.git/objects/26/70d56428e6089bea3ab729fc005308d4c7b0f1
+jenkinsfile/.git/objects/81/
+jenkinsfile/.git/objects/81/4dda3d7a59ad103451477f48caa4c719747d74
+deleting jenkinsfile@tmp/durable-1fe80d17/script.sh
+deleting jenkinsfile@tmp/durable-1fe80d17/jenkins-log.txt
+deleting jenkinsfile@tmp/durable-1fe80d17/
+jenkinsfile/.git/objects/b1/
+jenkinsfile/.git/objects/b1/7e165cbf89954521c0d10950e89f9492e1de7c
+jenkinsfile/.git/refs/remotes/origin/
+jenkinsfile/.git/refs/remotes/origin/master
+jenkinsfile/src/
+jenkinsfile/src/hello.cpp
+jenkinsfile/tmp/obj/
+jenkinsfile/tmp/obj/hello.o
+jenkinsfile@tmp/
+jenkinsfile@tmp/durable-411eea73/

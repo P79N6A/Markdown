@@ -1,5 +1,5 @@
 TARGET := hello
-CC := g+
+CC := g++
 
 SRC_DIR = src
 BUILD_DIR = tmp

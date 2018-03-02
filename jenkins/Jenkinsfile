@@ -7,20 +7,24 @@ pipeline {
 		stage('Build') {
 			steps {
 				echo "Building.."
-				sh 'make clean && make'
-				archiveArtifacts artifacts : 'hello', fingerprint : true
+				sh 'sudo su'
+				sh 'docker run -v `pwd`:/build damoncheng/public:debian-build-v1'
 			}
 		}
 
 		stage('Test') {
 			steps {
 				echo "Testing.."
+				sh './hello'
 			}
 		}
 
 		stage('Deploy') {
 			steps {
 				echo "Deploying.."
+				sh 'echo "www.imd.com" > ~/rsyncd.secrets'
+				sh 'chmod 700 ~/rsyncd.secrets'
+				sh 'rsync -rvlHpogDtSu --delete --password-file=/home/docker/rsyncd.secrets ../ root@192.168.99.1::jenkins_deploy'
 			}
 		}
 	
