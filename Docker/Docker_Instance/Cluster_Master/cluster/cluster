@@ -5,7 +5,7 @@
 #description : sync master directory to slave by rsync
 #
 
-. /etc/rc.d/init.d/functions
+. /lib/lsb/init-functions
 
 DIR1="`dirname $BASH_SOURCE`"
 cluster_dir=`readlink -f "$DIR1"`
@@ -14,7 +14,23 @@ source $cluster_dir/config
 RETVAL=0
 
 start() {
+
    echo -n $"Starting cluster:"
+
+   [ $# == 0 ] && echo -e "\tip list is empty" && RETVAL=2 && return $RETVAL
+   echo -n > $cluster_dir/conf/ip.list
+
+   ip_count=0
+   for ip in $@
+   do
+
+	   ! [[ $ip =~ ^[[:digit:]]+(\.[[:digit:]]+){3} ]] && continue
+	   ip_count=$(($ip_count + 1))
+	   echo "/var/jenkins_home/ $ip jenkins" >> $cluster_dir/conf/ip.list
+
+   done
+   [ $ip_count == 0 ] && echo -e "\tip list is empty" && RETVAL=2 && return $RETVAL
+   cat $cluster_dir/conf/ip.list
 
    $cluster_dir/core/command_check.sh
    [ $? != 0 ] && echo -e "\tinotifywait and rsync need be installed" && RETVAL=2 && return $RETVAL
@@ -22,7 +38,7 @@ start() {
    $cluster_dir/core/check.sh $cluster_dir $ipfile $logdir/log
    [ $? != 0 ] && echo -e "\tcheck ip list fail" && RETVAL=2 && return $RETVAL
 
-   $corefile "$cluster_dir/config"  &
+   setsid $corefile "$cluster_dir/config"  &
    RETVAL=$?
 
    [ $RETVAL != 0 ] && echo -e "\tfail" && RETVAL=2 && return $RETVAL
@@ -33,7 +49,7 @@ start() {
 stop() {
     echo -n $"Stopping cluster:"
 
-    ! [ -f $pidfile ] && echo -e "\tno pid file!" && RETVAL=2 && return $RETVAL
+    ! [ -f $pidfile ] && RETVAL=0 && return $RETVAL
 
     pid=$(cat $pidfile)
     ([ $RETVAL != 0 ] || ! [[ $pid =~ ^[0-9]+$ ]]) &&  echo -e "\terror pid:$pid" && RETVAL=2 && return $RETVAL
@@ -54,13 +70,13 @@ stop() {
 }
 
 rh_status() {
-    status -p ${pidfile} ${corefile}
+    status_of_proc -p ${pidfile} ${corefile}
 }
 
 case "$1" in
     start)
        rh_status >/dev/null 2>&1 && exit 0
-       start
+       start $@
        ;;
     stop)
        stop
@@ -71,7 +87,7 @@ case "$1" in
        ;;
     restart)
        stop
-       start
+       start $@
        ;;
     *)
        echo $"Usage: cluster.sh {start|stop|restart|status}"

@@ -1,19 +1,28 @@
-# Use an official Python runtime as a parent image
-FROM launcher.gcr.io/google/debian8:latest
+FROM debian:jessie
 
-# Install any needed packages specified in requirements.txt
-RUN apt-get update && apt-get install -y inotify-tools rsync
+RUN echo "start docker rsynced........"
 
-# Set the working directory to /app
-WORKDIR /home/damoncheng/Git/Markdown/Docker/Docker_Instance/Cluster_Master
+RUN apt-get update
+RUN apt-get install -y rsync
+RUN apt-get install -y inotify-tools
+RUN apt-get clean
 
-# Copy the current directory contents into the container at /app
-ADD . /home/damoncheng/Git/Markdown/Docker/Docker_Instance/Cluster_Master
-ADD ./rsyncd.secrets /etc/rsyncd.secrets
+ADD rsync /etc/default/rsync
+ADD rsyncd.conf /etc/rsyncd.conf
+RUN chmod 600 /etc/rsyncd.conf
+ADD rsyncd-server.secrets  /etc/rsyncd-server.secrets
+RUN chmod 600 /etc/rsyncd-server.secrets
+ADD rsyncd.secrets  /etc/rsyncd.secrets
+RUN chmod 600 /etc/rsyncd.secrets
 
-# Make port 80 available to the world outside this container
-# EXPOSE 873 873
+ENV TINI_VERSION v0.17.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
 
-# Run app.py when the container launches
-# CMD ["./run_cluster.sh"]
+WORKDIR /jenkins
+ADD . /jenkins
 
+ENV IP_LIST "-"
+# Run your program under Tini
+CMD ["./boot_cluster.sh"]
