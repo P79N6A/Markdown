@@ -383,7 +383,7 @@ Then you can use the **iterator** pd do things like the following:
         
         ++pd;                 // make pd point to the next element
         
-**As you can see, an iterator behaves like a pointer**
+**As you can see, an iterator behaves like a pointer** 
 
         for (pd = scores.begin(); pd != scores.end(); pd++)
         
