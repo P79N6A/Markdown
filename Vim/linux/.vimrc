@@ -102,6 +102,8 @@ map <c-n> :NERDTreeToggle<CR>
 nnoremap <silent> <F8> :TagbarToggle<CR>
 "#---------NERDTree End----------# 
 
+nnoremap <silent> <F6> :TagbarToggle<CR>
+
 "#---------Ctrlp Start-----------#
 let g:ctrlp_regexp = 1
 "#---------Ctrlp End-------------#
