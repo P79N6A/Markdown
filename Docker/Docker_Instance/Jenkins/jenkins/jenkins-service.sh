@@ -44,7 +44,11 @@ docker service create --user root --name jenkins_master \
 #--rsync and inotify--#
 
 #正式部署环境
-docker service create --user root -e "IP_LIST=`cat ip.list`" --name jenkins_master_storage --mount type=bind,source=/tmp,destination=/tmp --mount type=volume,source=jenkins_home,destination=/var/jenkins_home --constraint 'node.role==worker' --mode global --restart-condition='on-failure' --publish 873:873  damoncheng/jenkins:sync-2
+docker service create --user root -e "IP_LIST=`cat ip.list`" --name jenkins_master_storage \
+                      --mount type=bind,source=/tmp,destination=/tmp \
+                      --mount type=bind,source=/data/jenkins_home,destination=/var/jenkins_home \
+                      --constraint 'node.role==worker' --mode global --restart-condition='on-failure'\
+                      --publish 873:873 qci.jenkins.sng.local/jenkins:sync-2
 
 #我的工作环境 挂载jenkins deploy
 docker service create --user root -e "IP_LIST=`cat ip.list`" --name jenkins_master_storage --mount type=bind,source=/tmp,destination=/tmp \
