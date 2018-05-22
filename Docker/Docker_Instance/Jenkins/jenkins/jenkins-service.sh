@@ -32,12 +32,14 @@ docker service create --user root --name jenkins_master --mount type=bind,source
 docker service create --user root --name jenkins_master --mount type=bind,source=/tmp,destination=/tmp --mount type=volume,source=jenkins_home,destination=/var/jenkins_home --constraint 'node.role==worker' --restart-condition='on-failure' -e JAVA_OPTS=-Duser.timezone=Hongkong --network jenkins_master_net --publish 36093:50000 --publish 8080:8080 damoncheng/jenkins:blueocean-timer
 
 #正式环境部署
-docker service create --user root --name jenkins_master --mount type=bind,source=/tmp,destination=/tmp --mount type=volume,source=jenkins_home,destination=/var/jenkins_home --constraint 'node.role==worker' --restart-condition='on-failure' -e JAVA_OPTS=-Duser.timezone=Hongkong --publish 36093:50000 --publish 8080:8080 damoncheng/jenkins:blueocean-timer
-
-
-#create jenkins blueocean_master docker by bind and bind and timer
-docker service create --user root --name jenkins_master --mount type=bind,source=/tmp,destination=/tmp --mount type=bind,source=/var/jenkins_home,destination=/var/jenkins_home --constraint 'node.role==manager' --restart-condition='on-failure' -e JAVA_OPTS=-Duser.timezone=Hongkong --network jenkins_master_net --publish 36093:50000 --publish 8080:8080 damoncheng/jenkins:blueocean-timer
-
+docker service create --user root --name jenkins_master \
+                      --mount type=bind,source=/tmp,destination=/tmp \
+                      --mount type=bind,source=/data/jenkins_home,destination=/var/jenkins_home \
+                      --constraint 'node.role==worker' --restart-condition='on-failure' \
+                      -e JAVA_OPTS=-Duser.timezone=Hongkong  -e JENKINS_SLAVE_AGENT_PORT=36093 \
+                      --network jenkins_master_net \
+                      --publish 36093:36093 --publish 8080:8080 \
+                      qci.jenkins.sng.local/jenkins:blueocean-timer
 
 #--rsync and inotify--#
 
