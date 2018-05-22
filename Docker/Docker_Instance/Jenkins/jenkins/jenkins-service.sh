@@ -36,7 +36,7 @@ docker service create --user root --name jenkins_master \
                       --mount type=bind,source=/tmp,destination=/tmp \
                       --mount type=bind,source=/data/jenkins_home,destination=/var/jenkins_home \
                       --constraint 'node.role==worker' --restart-condition='on-failure' \
-                      -e JAVA_OPTS=-Duser.timezone=Hongkong  -e JENKINS_SLAVE_AGENT_PORT=36093 \
+                      -e JAVA_OPTS='-Duser.timezone=Hongkong -Dhudson.util.ProcessTree.disable=true'  -e JENKINS_SLAVE_AGENT_PORT=36093 \
                       --network jenkins_master_net \
                       --publish 36093:36093 --publish 8080:8080 \
                       qci.jenkins.sng.local/jenkins:blueocean-timer
