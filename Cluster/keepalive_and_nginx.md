@@ -41,6 +41,7 @@ vrrp_instance VI_1 {
       10.85.0.222
    }
 
+}
    
 #---nginx http 高可用配置---#
 upstream master.jenkins.qcloud.com {
