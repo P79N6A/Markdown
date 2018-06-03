@@ -36,10 +36,10 @@ vrrp_instance VI_1 {
        auth_type PASS
        auth_pass 123456
    }
-
-   virtual_ipaddress {
-      10.85.0.222
-   }
+   
+    virtual_ipaddress {
+       10.85.0.222
+    }
 
 }
    
@@ -54,8 +54,6 @@ upstream master.jenkins.qcloud.com {
 server {
     listen       80;
     ignore_invalid_headers off;
-
-    
 
     location / {
 
