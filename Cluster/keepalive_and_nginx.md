@@ -35,7 +35,7 @@ vrrp_instance VI_1 {
     authentication {
        auth_type PASS
        auth_pass 123456
-   }
+    }
    
     virtual_ipaddress {
        10.85.0.222
