@@ -5,3 +5,7 @@
 [submodule "Project/ABI"]
 	path = Project/ABI
 	url = https://github.com/damoncheng/ABI
+
+[submodule "Project/sphinx"]
+	path = Project/sphinx
+	url = https://github.com/damoncheng/sphinx
