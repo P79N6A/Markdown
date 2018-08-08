@@ -1,6 +1,6 @@
 set foreign_key_checks=0 #屏蔽依赖检测进行数据库删除操作
 
-#清楚数据库表
+#清除数据库表
 SET FOREIGN_KEY_CHECKS = 0; 
 SET @tables = NULL;
 SELECT GROUP_CONCAT(table_schema, '.', table_name) INTO @tables
@@ -12,3 +12,9 @@ PREPARE stmt FROM @tables;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 SET FOREIGN_KEY_CHECKS = 1; 
+
+#dump database data only
+mysqldump --no-create-info
+
+#dump database skip trigger
+--skip-triggers
