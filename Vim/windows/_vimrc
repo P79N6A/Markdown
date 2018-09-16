@@ -1,5 +1,6 @@
 "#------Basic config--------#                                                                                                            
 "
+
 set encoding=utf-8
 set termencoding=utf-8
 
@@ -18,33 +19,6 @@ source $VIMRUNTIME/vimrc_example.vim
 "设置鼠标运行模式为WINDOWS模式 
 source $VIMRUNTIME/mswin.vim
 behave mswin
-
-set diffexpr=MyDiff()
-function MyDiff()
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  let arg1 = v:fname_in
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  let arg2 = v:fname_new
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  let arg3 = v:fname_out
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  let eq = ''
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      let cmd = '""' . $VIMRUNTIME . '\diff"'
-      let eq = '"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-    endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
-  endif
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-endfunction
-
-
 
 "syn on "语法高亮 
 set vb t_vb=
@@ -76,29 +50,10 @@ set fileformats=unix,dos
 set cursorline "突出显示当前行
 set showmatch "插入括号时，短暂地跳转到匹配的对应括号
 set matchtime=2 "短暂跳转到匹配括号的时间
-set smartindent "开启新行时使用智能自动缩进
+"set smartindent "开启新行时使用智能自动缩进
 filetype plugin indent on "自动识别文件类型，用文件类型plugin脚本，使用缩进定义文件
 "set autochdir
 
-:nn <M-1> 1gt
-
-:nn <M-2> 2gt
-
-:nn <M-3> 3gt
-
-:nn <M-4> 4gt
-
-:nn <M-5> 5gt
-
-:nn <M-6> 6gt
-
-:nn <M-7> 7gt
-
-:nn <M-8> 8gt
-
-:nn <M-9> 9gt
-
-:nn <M-0> :tablast<CR>
 
 "#------- start Vundle-------#                                                                                                         
 set nocompatible              " be iMproved, required
@@ -118,6 +73,15 @@ Plugin 'ctrlp.vim'
 Plugin 'EasyGrep'
 Plugin 'ack.vim'
 Plugin 'ctrlsf.vim'
+Plugin 'delimitMate.vim'
+Plugin 'Shougo/neocomplete.vim'
+Plugin 'dhruvasagar/vim-table-mode'
+Plugin 'honza/vim-snippets'
+Plugin 'Align'
+Plugin 'YankRing.vim'
+Plugin 'goyo.vim'
+Plugin 'junegunn/limelight.vim'
+Plugin 'vim-colors-pencil'
 
 
 " The following are examples of different formats supported.
@@ -151,21 +115,38 @@ filetype plugin indent on    " required
 "
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
-" #---------end Vundle-----------#
 
 
-"#---------Ctrlp Start-----------#
+"Ctrlp Start
 let g:ctrlp_regexp = 1
-"#---------Ctrlp End-------------#
 
 nnoremap <silent> <F6> :TagbarToggle<CR>
 
-" #--------NERDTree Start--------#
-"nnoremap <silent> <F5> :NERDTreeToggle<CR>
-map <c-n> :NERDTreeToggle<CR>
-"#---------NERDTree End----------# 
+"NERDTree
+nnoremap <silent> <F5> :NERDTreeToggle<CR>
+"map <c-n> :NERDTreeToggle<CR>
+:nn <M-1> 1gt
 
-"#---------CtrlSF start----------#
+:nn <M-2> 2gt
+
+:nn <M-3> 3gt
+
+:nn <M-4> 4gt
+
+:nn <M-5> 5gt
+
+:nn <M-6> 6gt
+
+:nn <M-7> 7gt
+
+:nn <M-8> 8gt
+
+:nn <M-9> 9gt
+
+:nn <M-0> :tablast<CR>
+
+
+"CtrlSF
 nmap     <C-F>f <Plug>CtrlSFPrompt
 vmap     <C-F>f <Plug>CtrlSFVwordPath
 vmap     <C-F>F <Plug>CtrlSFVwordExec
@@ -174,6 +155,53 @@ nmap     <C-F>p <Plug>CtrlSFPwordPath
 nnoremap <C-F>o :CtrlSFOpen<CR>
 nnoremap <C-F>t :CtrlSFToggle<CR>
 inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
-"#---------CtrlSF end----------#
 
+"netcomplete
+let g:neocomplete#enable_at_startup = 1
+
+"YankRing
+nnoremap <silent> <F11> :YRShow<CR>
+
+
+"limelight
+
+nmap <Leader>l <Plug>(Limelight)
+xmap <Leader>l <Plug>(Limelight)
+
+" Color name (:help cterm-colors) or ANSI code
+let g:limelight_conceal_ctermfg = 'gray'
+let g:limelight_conceal_ctermfg = 240
+
+" Color name (:help gui-colors) or RGB color
+let g:limelight_conceal_guifg = 'DarkGray'
+let g:limelight_conceal_guifg = '#777777'
+
+" Default: 0.5
+let g:limelight_default_coefficient = 0.7
+
+" Number of preceding/following paragraphs to include (default: 0)
+let g:limelight_paragraph_span = 0
+
+" Beginning/end of paragraph
+"   When there's no empty line between the paragraphs
+"   and each paragraph starts with indentation
+let g:limelight_bop = '^\s'
+let g:limelight_eop = '\ze\n^\s'
+
+" Highlighting priority (default: 10)
+"   Set it to -1 not to overrule hlsearch
+let g:limelight_priority = -1
+
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
+
+"vim-colors-pencil
+set background=dark
+let g:pencil_higher_contrast_ui = 1   " 0=low (def), 1=high
+let g:pencil_neutral_headings = 1 " 0=blue (def), 1=normal
+let loaded_matchparen = 1
+
+colorscheme pencil
+
+"autocmd VimEnter * Limelight
 
