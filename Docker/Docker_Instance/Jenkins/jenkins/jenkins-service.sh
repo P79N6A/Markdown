@@ -32,7 +32,7 @@ docker service create --user root --name jenkins_master --mount type=bind,source
 docker service create --user root --name jenkins_master \ 
                       --mount type=bind,source=/tmp,destination=/tmp \ 
                       --mount type=volume,source=jenkins_home,destination=/var/jenkins_home \ 
-                      --constraint 'node.role==worker' --restart-condition='on-failure' \
+                      --constraint 'node.role==manager' --restart-condition='on-failure' \
                       -e JAVA_OPTS='-Duser.timezone=Hongkong -Dhudson.util.ProcessTree.disable=true' \
                       -e JENKINS_SLAVE_AGENT_PORT=36093 \
                       --network jenkins_master_net \
