@@ -27,17 +27,6 @@ docker service create --user root --name jenkins_master --mount type=volume,sour
 docker service create --user root --name jenkins_master --mount type=bind,source=/home/damoncheng,destination=/home/damoncheng --mount type=volume,source=jenkins_home,destination=/var/jenkins_home --constraint 'node.role==manager' --restart-condition='on-failure' -e JAVA_OPTS=-Duser.timezone=Hongkong --network jenkins_master_net --publish 36093:50000 --publish 8080:8080 damoncheng/public:jenkinsci-blueocean
 
 #create jenkins blueocean_master docker by bind and volumn and timer
-  
-#我的工作环境 (docker-machine)
-docker service create --user root --name jenkins_master \ 
-                      --mount type=bind,source=/tmp,destination=/tmp \ 
-                      --mount type=volume,source=jenkins_home,destination=/var/jenkins_home \ 
-                      --constraint 'node.role==manager' --restart-condition='on-failure' \
-                      -e JAVA_OPTS='-Duser.timezone=Hongkong -Dhudson.util.ProcessTree.disable=true' \
-                      -e JENKINS_SLAVE_AGENT_PORT=36093 \
-                      --network jenkins_master_net \
-                      --publish 36093:50000 --publish 8080:8080 \
-                      damoncheng/jenkins:blueocean-timer
 
 #正式环境部署
 docker service create --user root --name jenkins_master \
@@ -49,6 +38,34 @@ docker service create --user root --name jenkins_master \
                       --network jenkins_master_net \
                       --publish 36093:36093 --publish 8080:8080 \
                       qci.jenkins.sng.local/jenkins:blueocean-timer
+
+
+  
+#我的工作环境-战神 (docker-machine)
+docker service create --user root --name jenkins_master \ 
+                      --mount type=bind,source=/tmp,destination=/tmp \ 
+                      --mount type=volume,source=jenkins_home,destination=/var/jenkins_home \ 
+                      --constraint 'node.role==manager' --restart-condition='on-failure' \
+                      -e JAVA_OPTS='-Duser.timezone=Hongkong -Dhudson.util.ProcessTree.disable=true' \
+                      -e JENKINS_SLAVE_AGENT_PORT=36093 \
+                      --network jenkins_master_net \
+                      --publish 36093:50000 --publish 8080:8080 \
+                      damoncheng/jenkins:blueocean-timer
+
+#我的工作环境-Mac
+docker service create --user root --name jenkins_master \
+--mount type=volume,source=jenkins_home,destination=/var/jenkins_home \
+--mount type=bind,source=/tmp,destination=/tmp \
+--mount type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock \
+--mount type=bind,source=/Users/hongxi/Git/Markdown,destination=/Markdown,ro=1 \
+--constraint 'node.role==manager' --restart-condition='on-failure' \
+-e JAVA_OPTS='-Duser.timezone=Hongkong -Dhudson.util.ProcessTree.disable=true' \
+-e JENKINS_SLAVE_AGENT_PORT=36093 \
+--network jenkins_master_net \
+--publish 36093:50000 --publish 8080:8080 \
+damoncheng/jenkins:blueocean-timer
+
+
 
 #--rsync and inotify--#
 
