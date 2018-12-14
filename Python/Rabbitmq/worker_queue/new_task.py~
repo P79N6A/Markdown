@@ -38,7 +38,7 @@ channel.basic_publish(exchange='',
                       body=message, 
 		      properties=pika.BasicProperties(
                          delivery_mode=2,
-                         expiration="60000",
+                         expiration="3* 60000",
                          priority=priority,
                       ))
 
