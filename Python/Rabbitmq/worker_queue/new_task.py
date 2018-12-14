@@ -18,7 +18,7 @@ channel.basic_publish(exchange='',
 
 
 #durable
-#channel.queue_declare(queue='task_queue', durable=True, arguments={"x-max-priority" : 10})
+channel.queue_declare(queue='task_queue', durable=True, arguments={"x-max-priority" : 10})
 #channel.queue_declare(queue='task_queue1', passive=True)
 
 arg_len = len(sys.argv)
